@@ -1,0 +1,1696 @@
+openapi: 3.1.0
+info:
+  title: Allotex Content API
+  version: wp/v2
+  summary: The anonymously readable WordPress REST content API behind us.allotex.com.
+  description: |-
+    Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
+
+    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
+
+    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex's LinkedIn page for news, so there is no on-site article feed to consume.
+
+    This is not a product Allotex markets. It is the site's own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.
+  contact:
+    name: Allotex Inc.
+    url: https://us.allotex.com/for-europe/contact/
+  license:
+    name: GPL-2.0-or-later
+    identifier: GPL-2.0-or-later
+  x-provenance:
+    method: derived
+    source: https://us.allotex.com/wp-json/
+    derived_by: API Evangelist enrichment pipeline
+    verified: '2026-08-06'
+    note: Operation set restricted to routes verified to return 200 anonymously. Schemas are modelled
+      from live response bodies and the upstream WordPress REST API handbook; no field is invented.
+servers:
+- url: https://us.allotex.com/wp-json
+  description: Allotex US corporate site (16 pages, 218 media items)
+- url: https://allotex.com/wp-json
+  description: Allotex global splash site (1 page; posts are unmodified theme demo content)
+externalDocs:
+  description: The upstream WordPress REST API handbook that defines the wp/v2 contract. Allotex publishes
+    no documentation of its own for this surface.
+  url: https://developer.wordpress.org/rest-api/
+tags:
+- name: discovery
+  description: Route index, cross-content search and the oEmbed provider endpoint.
+- name: content
+  description: Pages, posts, reusable blocks and navigation.
+- name: media
+  description: The 218-item media library and its size variants.
+- name: taxonomy
+  description: Categories and tags.
+- name: identity
+  description: Public author records.
+- name: schema
+  description: Registered post types, taxonomies and statuses.
+security: []
+components:
+  securitySchemes:
+    applicationPassword:
+      type: http
+      scheme: basic
+      description: 'WordPress application passwords, the only authentication method the route index advertises
+        (authorization endpoint: https://us.allotex.com/wp-admin/authorize-application.php). Credentials
+        are issued only to WordPress user accounts on the site; Allotex offers no public signup, so this
+        scheme is NOT obtainable by a third party. Every operation in this document is reachable anonymously
+        and none of them requires it.'
+  schemas:
+    RouteIndex:
+      type: object
+      description: The WordPress REST API discovery document.
+      properties:
+        name:
+          type: string
+          example: Allotex US
+        description:
+          type: string
+          example: Allograft Inlays &amp; Onlays
+        url:
+          type: string
+          format: uri
+          example: https://us.allotex.com
+        home:
+          type: string
+          format: uri
+        gmt_offset:
+          type: string
+        namespaces:
+          type: array
+          items:
+            type: string
+        authentication:
+          type: object
+          description: 'Supported authentication methods. On this site: application-passwords only.'
+        routes:
+          type: object
+          additionalProperties:
+            type: object
+        site_icon_url:
+          type: string
+          format: uri
+    Page:
+      type: object
+      description: A corporate page on us.allotex.com.
+      properties:
+        id:
+          type: integer
+          example: 11284
+        date:
+          type: string
+          format: date-time
+        date_gmt:
+          type: string
+          format: date-time
+        guid: &id001
+          type: object
+          properties:
+            rendered:
+              type: string
+              description: HTML for the field, transformed for display.
+            protected:
+              type: boolean
+        modified:
+          type: string
+          format: date-time
+        modified_gmt:
+          type: string
+          format: date-time
+        slug:
+          type: string
+        status:
+          type: string
+          enum:
+          - publish
+        type:
+          type: string
+          example: page
+        link:
+          type: string
+          format: uri
+        title: *id001
+        content: *id001
+        excerpt: *id001
+        author:
+          type: integer
+        featured_media:
+          type: integer
+        parent:
+          type: integer
+          description: ID of the parent page; 0 for a top-level page.
+        menu_order:
+          type: integer
+        template:
+          type: string
+        _links:
+          type: object
+    Post:
+      type: object
+      description: A blog post. The collection is empty on us.allotex.com.
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        slug:
+          type: string
+        status:
+          type: string
+        link:
+          type: string
+          format: uri
+        title: *id001
+        content: *id001
+        excerpt: *id001
+        author:
+          type: integer
+        featured_media:
+          type: integer
+        categories:
+          type: array
+          items:
+            type: integer
+        tags:
+          type: array
+          items:
+            type: integer
+        _links:
+          type: object
+    MediaItem:
+      type: object
+      description: An attachment in the media library.
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        slug:
+          type: string
+        type:
+          type: string
+          example: attachment
+        link:
+          type: string
+          format: uri
+        title: *id001
+        author:
+          type: integer
+        caption: *id001
+        alt_text:
+          type: string
+        media_type:
+          type: string
+          example: image
+        mime_type:
+          type: string
+          example: image/webp
+        media_details:
+          type: object
+          description: Width, height, file, filesize and the generated size variants.
+        post:
+          type: integer
+          nullable: true
+        source_url:
+          type: string
+          format: uri
+        _links:
+          type: object
+    Term:
+      type: object
+      description: A taxonomy term (category or tag).
+      properties:
+        id:
+          type: integer
+        count:
+          type: integer
+        description:
+          type: string
+        link:
+          type: string
+          format: uri
+        name:
+          type: string
+        slug:
+          type: string
+        taxonomy:
+          type: string
+        parent:
+          type: integer
+        _links:
+          type: object
+    User:
+      type: object
+      description: A public author record (view context).
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: T20Admin
+        url:
+          type: string
+        description:
+          type: string
+        link:
+          type: string
+          format: uri
+        slug:
+          type: string
+        avatar_urls:
+          type: object
+          additionalProperties:
+            type: string
+        _links:
+          type: object
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        url:
+          type: string
+          format: uri
+        type:
+          type: string
+        subtype:
+          type: string
+        _links:
+          type: object
+    PostType:
+      type: object
+      properties:
+        description:
+          type: string
+        hierarchical:
+          type: boolean
+        has_archive:
+          type: boolean
+        name:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+          nullable: true
+        taxonomies:
+          type: array
+          items:
+            type: string
+        rest_base:
+          type: string
+        rest_namespace:
+          type: string
+    Taxonomy:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        types:
+          type: array
+          items:
+            type: string
+        hierarchical:
+          type: boolean
+        rest_base:
+          type: string
+        rest_namespace:
+          type: string
+    OEmbed:
+      type: object
+      properties:
+        version:
+          type: string
+          example: '1.0'
+        provider_name:
+          type: string
+          example: Allotex US
+        provider_url:
+          type: string
+          format: uri
+        author_name:
+          type: string
+        author_url:
+          type: string
+          format: uri
+        title:
+          type: string
+        type:
+          type: string
+          example: rich
+        width:
+          type: integer
+        height:
+          type: integer
+        html:
+          type: string
+    RestError:
+      type: object
+      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json,
+        not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
+      required:
+      - code
+      - message
+      - data
+      properties:
+        code:
+          type: string
+          example: rest_post_invalid_id
+        message:
+          type: string
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            params:
+              type: object
+            details:
+              type: object
+  responses:
+    Error:
+      description: A WordPress REST error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+    NotFound:
+      description: The resource or route does not exist (rest_post_invalid_id / rest_no_route).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+          examples:
+            invalid_id:
+              value:
+                code: rest_post_invalid_id
+                message: Invalid post ID.
+                data:
+                  status: 404
+            no_route:
+              value:
+                code: rest_no_route
+                message: No route was found matching the URL and request method.
+                data:
+                  status: 404
+    TermNotFound:
+      description: The taxonomy term does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+          examples:
+            term:
+              value:
+                code: rest_term_invalid
+                message: Term does not exist.
+                data:
+                  status: 404
+    Forbidden:
+      description: Authentication is required for this route or context (rest_forbidden).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+          examples:
+            forbidden:
+              value:
+                code: rest_forbidden
+                message: Sorry, you are not allowed to do that.
+                data:
+                  status: 401
+    CommentsDisabled:
+      description: Comments are closed on the target resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+paths:
+  /:
+    get:
+      operationId: getRouteIndex
+      summary: Get the API route index
+      description: 'Returns the site discovery document: name, description, URL, registered namespaces,
+        the full route table (270 routes across 20 namespaces on this site) and the supported authentication
+        methods. This is the WordPress REST API''s own machine-readable index and is the only contract
+        Allotex publishes.'
+      tags:
+      - discovery
+      parameters:
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - help
+          default: view
+      - name: namespace
+        in: query
+        required: false
+        description: Restrict the index to a single namespace, e.g. wp/v2.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The route index.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteIndex'
+        '404': &id002
+          $ref: '#/components/responses/NotFound'
+  /wp/v2/pages:
+    get:
+      operationId: listPages
+      summary: List pages
+      description: 'Lists the published pages of us.allotex.com. Verified 2026-08-06: 16 pages (X-WP-Total:
+        16) covering Home, For Europe, About Us, Our Team, Medical Advisory Board, Conditions We Treat,
+        Careers, Science, History, Refractive Surgeons, Procedure, Press, Conferences, Blog, Contact and
+        Privacy Policy. Unlike many Elementor-built sites, content.rendered is POPULATED on this site,
+        so the full prose of each corporate page is retrievable.'
+      tags:
+      - content
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: parent
+        in: query
+        required: false
+        description: Limit result set to items with a specific parent page ID.
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: slug
+        in: query
+        required: false
+        description: Limit result set to posts with one or more specific slugs.
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderby
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - author
+          - date
+          - id
+          - include
+          - modified
+          - parent
+          - relevance
+          - slug
+          - title
+          - menu_order
+          default: date
+      responses:
+        '200':
+          description: A page collection. X-WP-Total and X-WP-TotalPages carry the counts; Link carries
+            rel="next"/rel="prev".
+          headers:
+            X-WP-Total:
+              description: Total number of items in the collection.
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              description: Total number of pages available.
+              schema:
+                type: integer
+            Link:
+              description: RFC 8288 pagination links.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Page'
+        '400': &id003
+          $ref: '#/components/responses/Error'
+  /wp/v2/pages/{id}:
+    get:
+      operationId: getPage
+      summary: Get a page
+      description: Retrieves a single page by numeric ID. Verified against page 11284 (Home).
+      tags:
+      - content
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      responses:
+        '200':
+          description: A page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+        '404': *id002
+  /wp/v2/posts:
+    get:
+      operationId: listPosts
+      summary: List posts
+      description: 'Lists blog posts. Verified 2026-08-06: the collection is registered but EMPTY on us.allotex.com
+        (X-WP-Total: 0) — Allotex publishes news through its LinkedIn page rather than an on-site blog,
+        and its Press page says so explicitly. The sibling site allotex.com returns 6 posts, all of which
+        are unmodified Elementor demo-theme content, not Allotex material.'
+      tags:
+      - content
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: categories
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: slug
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: A post collection (empty on this site).
+          headers:
+            X-WP-Total:
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '400': *id003
+  /wp/v2/posts/{id}:
+    get:
+      operationId: getPost
+      summary: Get a post
+      description: Retrieves a single post by numeric ID.
+      tags:
+      - content
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: A post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404': *id002
+  /wp/v2/media:
+    get:
+      operationId: listMedia
+      summary: List media items
+      description: 'Lists the media library. Verified 2026-08-06: 218 items (X-WP-Total: 218) — the clinical
+        imagery, product photography, team headshots and logo assets used across the site, each with its
+        generated size variants under media_details.sizes.'
+      tags:
+      - media
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: media_type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - image
+          - video
+          - text
+          - application
+          - audio
+      - name: mime_type
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A media collection.
+          headers:
+            X-WP-Total:
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaItem'
+        '400': *id003
+  /wp/v2/media/{id}:
+    get:
+      operationId: getMediaItem
+      summary: Get a media item
+      description: Retrieves a single attachment by numeric ID.
+      tags:
+      - media
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: A media item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaItem'
+        '404': *id002
+  /wp/v2/categories:
+    get:
+      operationId: listCategories
+      summary: List categories
+      description: 'Lists the category taxonomy. Verified 2026-08-06: 6 terms.'
+      tags:
+      - taxonomy
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: parent
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: hide_empty
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: A category collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Term'
+        '400': *id003
+  /wp/v2/categories/{id}:
+    get:
+      operationId: getCategory
+      summary: Get a category
+      description: Retrieves a single category term. Verified against term 1 (Uncategorized).
+      tags:
+      - taxonomy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: A category term.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Term'
+        '404':
+          $ref: '#/components/responses/TermNotFound'
+  /wp/v2/tags:
+    get:
+      operationId: listTags
+      summary: List tags
+      description: 'Lists the post_tag taxonomy. Verified 2026-08-06: 7 terms.'
+      tags:
+      - taxonomy
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: A tag collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Term'
+        '400': *id003
+  /wp/v2/tags/{id}:
+    get:
+      operationId: getTag
+      summary: Get a tag
+      description: Retrieves a single tag term.
+      tags:
+      - taxonomy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: A tag term.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Term'
+        '404':
+          $ref: '#/components/responses/TermNotFound'
+  /wp/v2/users:
+    get:
+      operationId: listUsers
+      summary: List public authors
+      description: 'Lists users who have authored public content. Verified 2026-08-06: 2 records, both
+        site-operator accounts (T20Admin, Allotex) rather than named staff — no personal data beyond a
+        display name, avatar and author archive link is exposed anonymously.'
+      tags:
+      - identity
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: 'A user collection (view context: public author fields only).'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401': &id004
+          $ref: '#/components/responses/Forbidden'
+  /wp/v2/users/{id}:
+    get:
+      operationId: getUser
+      summary: Get a public author
+      description: Retrieves a single public author record. Verified against user 1 (T20Admin).
+      tags:
+      - identity
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique identifier for the object.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: A user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401': *id004
+        '404': *id002
+  /wp/v2/comments:
+    get:
+      operationId: listComments
+      summary: List approved comments
+      description: 'Lists approved comments. Verified 2026-08-06: 0 comments on us.allotex.com. The sibling
+        site allotex.com returns X-WP-Total: 9551 on the same route, which is unmoderated comment spam
+        accumulated against demo-theme posts, not Allotex content.'
+      tags:
+      - content
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: post
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+      responses:
+        '200':
+          description: A comment collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '403':
+          $ref: '#/components/responses/CommentsDisabled'
+  /wp/v2/search:
+    get:
+      operationId: searchContent
+      summary: Search across content types
+      description: Cross-content search returning lightweight {id, title, url, type, subtype} records.
+        Verified 2026-08-06 with search=cornea, which returns the Medical Advisory Board, Science and
+        Conditions We Treat pages. 21 searchable items total.
+      tags:
+      - discovery
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - post
+          - term
+          - post-format
+          default: post
+      - name: subtype
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400': *id003
+  /wp/v2/types:
+    get:
+      operationId: listTypes
+      summary: List registered post types
+      description: Returns the registered post types, their rest_base and their taxonomies.
+      tags:
+      - schema
+      parameters:
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      responses:
+        '200':
+          description: A map of post types keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/PostType'
+  /wp/v2/types/{type}:
+    get:
+      operationId: getType
+      summary: Get a registered post type
+      description: Retrieves a single post type. Verified against 'page'.
+      tags:
+      - schema
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: An alphanumeric identifier for the post type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A post type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostType'
+        '404': *id002
+  /wp/v2/taxonomies:
+    get:
+      operationId: listTaxonomies
+      summary: List registered taxonomies
+      description: Returns the registered taxonomies and the post types they apply to.
+      tags:
+      - schema
+      parameters:
+      - name: type
+        in: query
+        required: false
+        description: Limit results to taxonomies associated with a specific post type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A map of taxonomies keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Taxonomy'
+  /wp/v2/taxonomies/{taxonomy}:
+    get:
+      operationId: getTaxonomy
+      summary: Get a registered taxonomy
+      description: Retrieves a single taxonomy. Verified against 'category'.
+      tags:
+      - schema
+      parameters:
+      - name: taxonomy
+        in: path
+        required: true
+        description: An alphanumeric identifier for the taxonomy.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A taxonomy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Taxonomy'
+        '404': *id002
+  /wp/v2/statuses:
+    get:
+      operationId: listStatuses
+      summary: List post statuses
+      description: 'Returns the publicly visible post statuses. Verified 2026-08-06: only ''publish''.'
+      tags:
+      - schema
+      parameters: []
+      responses:
+        '200':
+          description: A map of statuses keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /wp/v2/statuses/{status}:
+    get:
+      operationId: getStatus
+      summary: Get a post status
+      description: Retrieves a single post status. Verified against 'publish'.
+      tags:
+      - schema
+      parameters:
+      - name: status
+        in: path
+        required: true
+        description: An alphanumeric identifier for the status.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A post status.
+          content:
+            application/json:
+              schema:
+                type: object
+        '404': *id002
+  /wp/v2/blocks:
+    get:
+      operationId: listReusableBlocks
+      summary: List reusable blocks
+      description: 'Lists reusable editor blocks. Verified 2026-08-06: empty on this site.'
+      tags:
+      - content
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: A block collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /wp/v2/navigation:
+    get:
+      operationId: listNavigation
+      summary: List navigation menus
+      description: 'Lists block-based navigation menus. Verified 2026-08-06: 1 menu. Note that the classic
+        menu routes (/wp/v2/menu-items) return 401 anonymously.'
+      tags:
+      - content
+      parameters:
+      - name: context
+        in: query
+        required: false
+        description: Scope under which the request is made; determines fields present in the response.
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      - name: page
+        in: query
+        required: false
+        description: Current page of the collection.
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: per_page
+        in: query
+        required: false
+        description: Maximum number of items to be returned in the result set.
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: search
+        in: query
+        required: false
+        description: Limit results to those matching a string.
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        description: Order sort attribute ascending or descending.
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: _fields
+        in: query
+        required: false
+        description: Comma-separated list of fields to limit the response to.
+        schema:
+          type: string
+      - name: _embed
+        in: query
+        required: false
+        description: Embed linked resources (author, featured media, terms) into the response.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: A navigation collection.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /oembed/1.0/embed:
+    get:
+      operationId: getOEmbed
+      summary: Get an oEmbed response for a site URL
+      description: oEmbed 1.0 provider endpoint. Returns provider_name 'Allotex US', the author, the title,
+        a thumbnail and an iframe embed for any URL on this site. Verified against https://us.allotex.com/procedure/.
+      tags:
+      - discovery
+      parameters:
+      - name: url
+        in: query
+        required: true
+        description: The URL of the resource for which to fetch oEmbed data.
+        schema:
+          type: string
+          format: uri
+      - name: format
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+          default: json
+      - name: maxwidth
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 600
+      responses:
+        '200':
+          description: An oEmbed rich response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OEmbed'
+        '404': *id002
+  /mcp:
+    get:
+      operationId: getMcpNamespaceIndex
+      summary: Get the MCP namespace route index
+      description: 'Returns the routes registered under the ''mcp'' namespace. Verified 2026-08-06: 200,
+        advertising /mcp/mcp-adapter-default-server (GET/POST/DELETE). This is the WordPress MCP Adapter''s
+        default server. It is DISCOVERABLE anonymously but NOT USABLE: a JSON-RPC tools/list POST to the
+        server endpoint returns 401 rest_forbidden. Allotex does not document, market or issue credentials
+        for this endpoint, so no MCP agent surface is claimed for this provider. See mcp/allotex-mcp.yml.'
+      tags:
+      - discovery
+      parameters:
+      - name: namespace
+        in: query
+        required: false
+        schema:
+          type: string
+          default: mcp
+      responses:
+        '200':
+          description: The mcp namespace route index.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteIndex'

@@ -1,0 +1,100 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml
+corroborated_by: https://us.allotex.com/wp-json/ (route index `authentication` block, fetched 2026-08-06)
+api: allotex:allotex-content-api
+
+summary:
+  types:
+  - http
+  http_schemes:
+  - basic
+  api_key_in: []
+  oauth2_flows: []
+  anonymous_read: true
+  third_party_credential_obtainable: false
+
+headline: >-
+  There is no developer authentication for Allotex. Every catalogued operation is readable
+  anonymously, and the one scheme the site advertises cannot be obtained by anyone outside the
+  company. This is not a gate you can get through - it is the absence of a developer program.
+
+schemes:
+- name: applicationPassword
+  type: http
+  scheme: basic
+  sources:
+  - openapi/allotex-content-openapi.yml
+  advertised_at: https://us.allotex.com/wp-json/
+  authorization_endpoint: https://us.allotex.com/wp-admin/authorize-application.php
+  description: >-
+    WordPress application passwords over HTTP Basic - the only method the route index's
+    `authentication` block advertises on either host. Credentials are minted from within the site's
+    own wp-admin against an existing WordPress user account. Allotex operates no public signup, no
+    developer registration and no key request form, so a third party has no route to a credential.
+  required_by_any_catalogued_operation: false
+
+anonymous_surface:
+  detail: >-
+    All 25 operations in openapi/allotex-content-openapi.yml return 200 without any credential.
+  routes:
+  - /wp/v2/pages
+  - /wp/v2/posts
+  - /wp/v2/media
+  - /wp/v2/categories
+  - /wp/v2/tags
+  - /wp/v2/users
+  - /wp/v2/comments
+  - /wp/v2/search
+  - /wp/v2/types
+  - /wp/v2/taxonomies
+  - /wp/v2/statuses
+  - /wp/v2/blocks
+  - /wp/v2/navigation
+  - /oembed/1.0/embed
+  - /mcp
+
+gated_surface:
+  detail: >-
+    Probed anonymously on 2026-08-06. These are NOT retry-with-credentials conditions for a third
+    party - they are permanent.
+  routes:
+  - {path: /wp/v2/settings, status: 401, code: rest_forbidden}
+  - {path: /wp/v2/menu-items, status: 401, code: rest_forbidden}
+  - {path: /wp/v2/themes, status: 401, code: rest_forbidden}
+  - {path: /wp/v2/plugins, status: 401, code: rest_forbidden}
+  - {path: /wp/v2/block-patterns/patterns, status: 401, code: rest_forbidden}
+  - {path: /wp-abilities/v1/abilities, status: 401, code: rest_forbidden}
+  - {path: /mcp/mcp-adapter-default-server, status: 401, code: rest_forbidden, method: POST}
+  - {path: /contact-form-7/v1/contact-forms, status: 403, code: wpcf7_forbidden}
+  - {path: '/wp/v2/pages?context=edit', status: 401, code: rest_forbidden_context}
+  - {path: /wp/v2/pages, status: 401, code: rest_cannot_create, method: POST}
+
+not_supported:
+  oauth2:
+    supported: false
+    evidence: >-
+      No oauth2 securityScheme in the derived spec; /.well-known/oauth-authorization-server and
+      /.well-known/oauth-protected-resource both return 404 on both hosts.
+  openid_connect:
+    supported: false
+    evidence: /.well-known/openid-configuration returns 404 on both hosts.
+  api_keys:
+    supported: false
+    evidence: No apiKey scheme is advertised and no key issuance surface exists.
+  mutual_tls:
+    supported: false
+
+csrf:
+  nonce_header: X-WP-Nonce
+  detail: >-
+    The route index's CORS policy allows an X-WP-Nonce request header, which is WordPress's
+    cookie-authenticated first-party mechanism for logged-in admin sessions. It is irrelevant to
+    third-party consumers, who have no session to nonce.
+
+docs: null
+docs_note: >-
+  Allotex publishes no authentication documentation. The upstream contract is defined at
+  https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/ - that is WordPress's
+  documentation, not Allotex's, and is recorded as the humanURL on the API entry rather than as a
+  provider Documentation pointer.

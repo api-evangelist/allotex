@@ -1,0 +1,204 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml
+verified: '2026-08-06'
+api: allotex:allotex-content-api
+
+summary: >-
+  The entity graph of the Allotex Content API, derived from the OpenAPI schemas and confirmed
+  against live responses and the /wp/v2/types and /wp/v2/taxonomies registries. This is the generic
+  WordPress content model - Allotex registers no custom post type, so there is no Product, Device,
+  Trial or Publication entity. The company's actual domain objects (the TransForm allograft, the
+  clinical studies, the advisory board) exist only as prose inside Page.content.rendered.
+
+id_strategy:
+  form: sequential integers, shared across every post type
+  detail: >-
+    Pages, posts and media all draw from one wp_posts id sequence, so ids are unique across those
+    three types but carry no type prefix. Taxonomy terms have their own separate sequence, which is
+    why GET /wp/v2/tags/1 returns rest_term_invalid while GET /wp/v2/categories/1 returns a term.
+  observed_ranges:
+    pages: 3, 11282-11297, 12145, 12186
+    users: 1-2
+    media: up to ~12400
+
+entities:
+- name: Page
+  rest_base: pages
+  path: /wp/v2/pages
+  count_observed: 16
+  hierarchical: true
+  key: id
+  description: >-
+    The substantive entity. All 16 corporate pages, with populated content.rendered - Home, For
+    Europe, About Us, Our Team, Medical Advisory Board, Conditions We Treat, Careers, Science,
+    History, Refractive Surgeons, Procedure, Press, Conferences, Blog, Contact, Privacy Policy.
+
+- name: Post
+  rest_base: posts
+  path: /wp/v2/posts
+  count_observed: 0
+  hierarchical: false
+  key: id
+  description: >-
+    Registered but empty on us.allotex.com. The sibling host allotex.com returns 6 records, all
+    unmodified Elementor demo-theme articles.
+
+- name: MediaItem
+  rest_base: media
+  path: /wp/v2/media
+  count_observed: 218
+  key: id
+  description: Attachments - clinical imagery, product photography, headshots, logo assets, each with generated size variants under media_details.sizes.
+
+- name: Term
+  rest_base: categories | tags
+  path: /wp/v2/categories, /wp/v2/tags
+  count_observed: 6 categories, 7 tags
+  hierarchical: true (categories) / false (tags)
+  key: id
+  description: >-
+    Taxonomy terms. Because the posts collection is empty, every category on us.allotex.com has
+    count 0 - the taxonomy is vestigial.
+
+- name: User
+  rest_base: users
+  path: /wp/v2/users
+  count_observed: 2
+  key: id
+  description: >-
+    Public author records. Both are operator accounts (T20Admin, Allotex), not named staff. No
+    email, role or personal data is exposed in view context.
+
+- name: NavigationMenu
+  rest_base: navigation
+  path: /wp/v2/navigation
+  count_observed: 1
+  key: id
+  description: Block-based navigation menu. The classic /wp/v2/menu-items route returns 401.
+
+- name: PostType
+  rest_base: types
+  path: /wp/v2/types
+  key: slug
+  description: Registry entity describing each content type's rest_base, hierarchy and taxonomies.
+
+- name: Taxonomy
+  rest_base: taxonomies
+  path: /wp/v2/taxonomies
+  key: slug
+  description: Registry entity describing each taxonomy and the post types it applies to.
+
+- name: PostStatus
+  rest_base: statuses
+  path: /wp/v2/statuses
+  key: slug
+  count_observed: 1
+  description: Only 'publish' is publicly visible.
+
+relationships:
+- from: Page
+  to: Page
+  type: belongs_to
+  via: parent
+  detail: >-
+    A real tree on this site, not a flat list. 11282 (For Europe) parents About Us, Science, Press,
+    Conferences, Blog and Contact; 11290 (About Us) parents Our Team, Medical Advisory Board,
+    Conditions We Treat and Careers; 11285 (Science) parents History and Refractive Surgeons.
+    Top-level pages carry parent 0.
+- from: Page
+  to: Page
+  type: has_many
+  via: parent (inverse)
+  query: /wp/v2/pages?parent=11282
+- from: Page
+  to: User
+  type: belongs_to
+  via: author
+- from: Page
+  to: MediaItem
+  type: has_one
+  via: featured_media
+  detail: 0 when unset
+- from: Post
+  to: User
+  type: belongs_to
+  via: author
+- from: Post
+  to: Term
+  type: has_many
+  via: categories
+- from: Post
+  to: Term
+  type: has_many
+  via: tags
+- from: Post
+  to: MediaItem
+  type: has_one
+  via: featured_media
+- from: MediaItem
+  to: Page
+  type: belongs_to
+  via: post
+  detail: nullable - most library items are unattached
+- from: MediaItem
+  to: User
+  type: belongs_to
+  via: author
+- from: Term
+  to: Term
+  type: belongs_to
+  via: parent
+  detail: categories only; tags are flat
+- from: PostType
+  to: Taxonomy
+  type: has_many
+  via: taxonomies
+- from: Taxonomy
+  to: PostType
+  type: has_many
+  via: types
+
+traversal:
+  hypermedia: >-
+    Every record carries a _links block (self, collection, about, author, wp:featuredmedia,
+    wp:attachment, wp:term, up), so the graph above is walkable without hardcoding paths.
+  expansion: >-
+    Append ?_embed to resolve author, featured media and terms inline into an _embedded object in
+    a single round trip.
+
+page_tree:
+  0:
+  - {id: 11282, title: For Europe}
+  - {id: 12145, title: Procedure}
+  - {id: 3, title: Privacy Policy}
+  11282:
+  - {id: 11284, title: Home}
+  - {id: 11285, title: Science}
+  - {id: 11288, title: Press}
+  - {id: 11295, title: Conferances}
+  - {id: 11296, title: Blog}
+  - {id: 11297, title: Contact}
+  - {id: 11290, title: About Us}
+  11290:
+  - {id: 11291, title: Careers}
+  - {id: 11292, title: Conditions We Treat}
+  - {id: 11293, title: Medical Advisory Board}
+  - {id: 12186, title: Our Team}
+  11285:
+  - {id: 11286, title: History}
+  - {id: 11287, title: Refractive Surgeons}
+  note: >-
+    The slugs do not match the titles. "Our Team" lives at /about-us/leadership/, "Medical Advisory
+    Board" at /about-us/clinical-leaders/, "Conditions We Treat" at /about-us/founders/, "Careers"
+    at /about-us/our-team/, and "History" at /tissue-processing/eu-footer/. A consumer must key on
+    id or title, never on slug.
+
+gaps:
+- >-
+  No custom post types. A company whose value is a regulated medical device publishes zero
+  structured records about that device - no Product, no ClinicalTrial, no Publication, no
+  PressRelease entity. Everything is unstructured HTML inside Page.content.rendered.
+- >-
+  Post meta is not projected into REST, so the Elementor page-builder structure behind each page is
+  invisible; only the rendered HTML is retrievable.

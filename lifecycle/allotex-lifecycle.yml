@@ -1,0 +1,82 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml + site search 2026-08-06
+api: allotex:allotex-content-api
+
+summary: >-
+  Allotex publishes no lifecycle commitments of any kind for this surface. There is no versioning
+  policy, no deprecation policy, no Sunset/Deprecation header support, no SLA, no uptime target,
+  no status page and no changelog. This is expected: the surface is the company's marketing site's
+  own CMS API, not a product. The versioning below is the upstream WordPress namespace, which
+  Allotex inherits rather than governs. No `StatusPage`, `Deprecation` or `ChangeLog` pointer is
+  emitted, because none of those pages exist.
+
+versioning:
+  scheme: uri-path-namespace
+  current: wp/v2
+  governed_by: upstream WordPress core, not Allotex
+  docs: https://developer.wordpress.org/rest-api/
+  detail: >-
+    The version segment is part of the route (/wp-json/wp/v2/...). A consumer's practical version
+    risk is not a WordPress major-version bump but a plugin change on the Allotex install: the
+    route index already carries rankmath, elementor, sliderrevolution, contact-form-7, fluent-smtp,
+    wp-abilities and mcp namespaces, and those come and go with plugin activation without notice.
+
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  detail: >-
+    No operation in openapi/allotex-content-openapi.yml is marked deprecated, and no Sunset or
+    Deprecation response header was observed on any probe.
+
+sla:
+  url: null
+  uptime_target: null
+  published: false
+
+status_page:
+  url: null
+  published: false
+  probed:
+  - {url: 'https://status.allotex.com/', result: DNS does not resolve}
+  - {url: 'https://us.allotex.com/status/', http_status: 404}
+  detail: >-
+    Infrastructure status is effectively delegated: the site is hosted on Kinsta behind Cloudflare
+    (observed headers server: cloudflare, ki-edge, x-kinsta-cache), so upstream incidents would
+    surface on those providers' status pages, not on one Allotex operates.
+
+changelog:
+  url: null
+  published: false
+  detail: >-
+    No dated changelog exists for either the API or the site. The nearest thing to a company news
+    feed is the Press page at https://us.allotex.com/for-europe/news-feed/, which contains no dated
+    entries and instead directs readers to Allotex's LinkedIn page. The /wp/v2/posts collection is
+    empty, so there is no article feed to poll either.
+
+observed_content_freshness:
+  note: >-
+    In the absence of a changelog, the modified timestamps in the content API are the only change
+    signal a consumer has.
+  source: GET /wp/v2/pages?_fields=id,modified
+  page_sitemap_lastmod: '2026-07-24T16:09:44+00:00'
+  home_page_datemodified: '2026-06-01T23:24:00+03:00'
+  detail: >-
+    Poll /wp/v2/pages?orderby=modified&order=desc&per_page=1 to detect site edits; it is the only
+    change-detection mechanism available.
+
+regulatory_lifecycle:
+  note: >-
+    Not an API lifecycle, but the lifecycle that actually governs this company. Recorded because it
+    is the milestone track a reader of this profile is looking for.
+  milestones:
+  - {date: '2016', event: Allotex introduces its tissue-addition technology (excimer laser + OCT + shelf-stable sterile cornea), source: 'https://us.allotex.com/for-europe/tissue-processing/eu-footer/'}
+  - {date: '2025-05', event: IDE application submitted to the U.S. FDA for the Allo-1 corneal implant, source: web-search}
+  - {date: '2026-01', event: FDA approves the IDE for a U.S. presbyopia study, source: web-search}
+  caveat: >-
+    The 2025/2026 regulatory milestones come from trade press, not from Allotex's own site - the
+    Press page carries no dated entries. Treat them as reported, not as company-published.

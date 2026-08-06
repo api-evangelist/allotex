@@ -1,0 +1,130 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml
+verified: '2026-08-06'
+api: allotex:allotex-content-api
+format: wordpress-rest
+rfc9457: false
+
+envelope:
+  media_type: application/json
+  fields:
+    code: machine-readable error slug
+    message: human-readable sentence
+    data.status: the HTTP status repeated in the body
+    data.params: per-parameter messages, present on rest_invalid_param
+    data.details: per-parameter structured detail with its own nested code
+  example:
+    code: rest_post_invalid_id
+    message: Invalid post ID.
+    data:
+      status: 404
+  note: >-
+    This is NOT RFC 9457. There is no `type` URI, no `title`, no `detail` and no
+    application/problem+json media type. Allotex publishes no error reference; every entry below
+    was produced by issuing the failing request against https://us.allotex.com/wp-json and
+    recording the real response on 2026-08-06.
+
+problems:
+- code: rest_post_invalid_id
+  status: 404
+  message: Invalid post ID.
+  cause: The numeric id in the path does not resolve to a published object of that type.
+  remediation: List the collection first and use an id from the result set.
+  verified_against: GET /wp/v2/pages/99999, GET /wp/v2/media/12100
+  source_operation: openapi/allotex-content-openapi.yml#getPage
+
+- code: rest_no_route
+  status: 404
+  message: No route was found matching the URL and request method.
+  cause: The path is not registered in the route index, or the method is not allowed on it.
+  remediation: Fetch GET /wp-json/ and use a path and method from the routes table.
+  verified_against: GET /wp-json/wp/v2/nonexistent
+  source_operation: openapi/allotex-content-openapi.yml#getRouteIndex
+
+- code: rest_term_invalid
+  status: 404
+  message: Term does not exist.
+  cause: The taxonomy term id does not exist. Distinct from rest_post_invalid_id - taxonomy routes use their own code.
+  remediation: List /wp/v2/categories or /wp/v2/tags and use a returned id.
+  verified_against: GET /wp/v2/tags/1
+  source_operation: openapi/allotex-content-openapi.yml#getTag
+
+- code: rest_forbidden
+  status: 401
+  message: Sorry, you are not allowed to do that.
+  cause: >-
+    The route requires an authenticated WordPress user. Anonymous callers hit this on
+    /wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins,
+    /wp/v2/block-patterns/patterns, every /wp-abilities/v1/* endpoint, and the MCP server at
+    /mcp/mcp-adapter-default-server.
+  remediation: >-
+    Not remediable by a third party. Allotex operates no public signup and application passwords
+    are issued only to accounts in its own wp-admin.
+  verified_against: GET /wp/v2/settings, POST /wp-json/mcp/mcp-adapter-default-server
+  source_operation: openapi/allotex-content-openapi.yml#listUsers
+
+- code: rest_forbidden_context
+  status: 401
+  message: Sorry, you are not allowed to edit posts in this post type.
+  cause: context=edit was requested without authentication.
+  remediation: Use context=view (the default) or context=embed.
+  verified_against: GET /wp/v2/pages?context=edit
+  source_operation: openapi/allotex-content-openapi.yml#listPages
+
+- code: rest_cannot_create
+  status: 401
+  message: Sorry, you are not allowed to create posts as this user.
+  cause: A write method was issued anonymously against a content collection.
+  remediation: >-
+    Not remediable by a third party. This surface is read-only for anyone outside the company.
+  verified_against: POST /wp/v2/pages
+  source_operation: openapi/allotex-content-openapi.yml#listPages
+
+- code: rest_invalid_param
+  status: 400
+  message: 'Invalid parameter(s): per_page'
+  cause: A query parameter failed schema validation. data.params and data.details name the offender.
+  remediation: >-
+    Read data.details[<param>].message for the constraint. For per_page the bound is 1..100
+    inclusive.
+  verified_against: GET /wp/v2/pages?per_page=200
+  source_operation: openapi/allotex-content-openapi.yml#listPages
+
+- code: rest_post_invalid_page_number
+  status: 400
+  message: The page number requested is larger than the number of pages available.
+  cause: page exceeded X-WP-TotalPages.
+  remediation: Read X-WP-TotalPages from the first response and stop paging at that value.
+  verified_against: GET /wp/v2/pages?page=99
+  source_operation: openapi/allotex-content-openapi.yml#listPages
+
+- code: rest_user_invalid_id
+  status: 404
+  message: Invalid user ID.
+  cause: The user id does not resolve to a public author.
+  remediation: List /wp/v2/users and use a returned id.
+  source_operation: openapi/allotex-content-openapi.yml#getUser
+
+- code: wpcf7_forbidden
+  status: 403
+  message: You are not allowed to access contact forms.
+  cause: >-
+    The Contact Form 7 plugin registers /contact-form-7/v1/contact-forms; it is admin-only.
+  remediation: Use the contact page at https://us.allotex.com/for-europe/contact/ instead.
+  verified_against: GET /wp-json/contact-form-7/v1/contact-forms
+
+status_summary:
+  '400': [rest_invalid_param, rest_post_invalid_page_number]
+  '401': [rest_forbidden, rest_forbidden_context, rest_cannot_create]
+  '403': [wpcf7_forbidden]
+  '404': [rest_post_invalid_id, rest_no_route, rest_term_invalid, rest_user_invalid_id]
+
+gaps:
+- >-
+  401 is used where 403 is semantically correct. rest_forbidden, rest_forbidden_context and
+  rest_cannot_create all mean "authenticated identity would not help you" for a third party, yet
+  they return 401, which tells a client to retry with credentials it can never obtain.
+- >-
+  No Retry-After is emitted on any error, and no 429 was observed, so a client cannot back off on
+  signal - only on a fixed schedule.

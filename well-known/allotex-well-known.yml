@@ -1,0 +1,88 @@
+generated: '2026-08-06'
+method: probed
+source: live HTTP probes of every Allotex host
+summary: >-
+  Allotex publishes no /.well-known/ discovery documents on either host. All 22 probes (11 paths x
+  2 hosts) returned 404 from the WordPress 404 handler - not a catch-all 200, so these are true
+  absences rather than an SPA false positive. No security.txt, no OIDC/OAuth discovery, no
+  api-catalog, no ai-plugin, and no A2A agent card at either the canonical
+  /.well-known/agent-card.json or the legacy /.well-known/agent.json path. Nothing was written to
+  a2a/ as a result: per the enrichment contract an agent card is search-only and must never be
+  authored on a provider's behalf.
+hosts:
+- host: https://us.allotex.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/change-password
+    status: 404
+  - path: /.well-known/dnt-policy.txt
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 404
+- host: https://allotex.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/change-password
+    status: 404
+  - path: /.well-known/dnt-policy.txt
+    status: 404
+  - path: /.well-known/mcp.json
+    status: 404
+adjacent_discovery:
+  note: >-
+    Discovery documents Allotex does serve, outside /.well-known/. These are the site's real
+    machine-readable entry points.
+  documents:
+  - path: /wp-json/
+    status: 200
+    kind: WordPress REST route index
+    detail: 270 routes across 20 namespaces on us.allotex.com; 207 routes across 12 namespaces on allotex.com
+  - path: /robots.txt
+    status: 200
+    kind: robots
+    detail: >-
+      Disallow /wp-admin/ only, with an explicit Allow for /wp-admin/admin-ajax.php. No AI or agent
+      user-agent directives on either host.
+  - path: /sitemap_index.xml
+    status: 200
+    kind: sitemap index
+    detail: Rank Math generated; page, liquid-header and liquid-footer sitemaps (us.allotex.com only)
+  - path: /wp-json/oembed/1.0/embed
+    status: 200
+    kind: oEmbed 1.0 provider
+  - path: /wp-json/mcp
+    status: 200
+    kind: MCP Adapter namespace index
+    detail: >-
+      Advertises /mcp/mcp-adapter-default-server, but a JSON-RPC tools/list POST returns 401
+      rest_forbidden. See mcp/allotex-mcp.yml.

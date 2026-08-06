@@ -1,0 +1,110 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Allotex Content API
+  version: 1.0.0
+extends: openapi/allotex-content-openapi.yml
+x-provenance:
+  generated: '2026-08-06'
+  method: generated
+  source: API Evangelist enrichment pipeline
+  note: >-
+    Allotex publishes no OpenAPI. openapi/allotex-content-openapi.yml is itself derived by this
+    pipeline from the WordPress route index, so this overlay records the judgements layered on top
+    of that derivation - the coverage reality, the access boundary, and the agent-facing warnings a
+    consumer needs but the raw route table does not carry.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/allotex/
+    x-apievangelist-derived: true
+    x-apievangelist-provider-published-spec: false
+    x-apievangelist-surface-class: incidental-cms
+    x-apievangelist-note: >-
+      This is not a product API. Allotex Inc. is an ophthalmic biologics and medical device company
+      with no developer program. This contract describes the WordPress CMS behind its marketing
+      site, catalogued because it is the only credential-free machine-readable surface the company
+      exposes.
+
+- target: $.info
+  update:
+    x-agent-readiness:
+      usable_anonymously: true
+      read_only: true
+      stable_contract: false
+      stability_note: >-
+        The route surface is governed by plugin activation on the Allotex install, not by a
+        versioning policy. Namespaces observed on 2026-08-06 (rankmath, elementor, sliderrevolution,
+        contact-form-7, fluent-smtp, wp-abilities, mcp) can appear or disappear without notice.
+      rate_limits_documented: false
+      rate_limits_note: >-
+        No RateLimit-* or Retry-After headers on any response. Cloudflare and Kinsta sit in front
+        of origin, so an undocumented edge throttle should be assumed. Poll conservatively.
+      change_detection: GET /wp/v2/pages?orderby=modified&order=desc&per_page=1
+
+- target: $.info
+  update:
+    x-access-boundary:
+      anonymous_read:
+      - /wp/v2/pages
+      - /wp/v2/posts
+      - /wp/v2/media
+      - /wp/v2/categories
+      - /wp/v2/tags
+      - /wp/v2/users
+      - /wp/v2/comments
+      - /wp/v2/search
+      - /wp/v2/types
+      - /wp/v2/taxonomies
+      - /wp/v2/statuses
+      - /wp/v2/blocks
+      - /wp/v2/navigation
+      - /oembed/1.0/embed
+      - /mcp
+      gated_401_403:
+      - /wp/v2/settings
+      - /wp/v2/menu-items
+      - /wp/v2/themes
+      - /wp/v2/plugins
+      - /wp/v2/block-patterns/patterns
+      - /wp-abilities/v1/abilities
+      - /mcp/mcp-adapter-default-server
+      - /contact-form-7/v1/contact-forms
+      credential_obtainable_by_third_party: false
+      credential_note: >-
+        The only advertised auth method is WordPress application passwords, issued from the site's
+        own wp-admin. Allotex operates no public signup, so the gated set is permanently
+        unreachable for any external consumer. Do not treat the 401s as a retry-with-credentials
+        condition.
+
+- target: $.paths['/wp/v2/posts'].get
+  update:
+    x-apievangelist-empty-collection: true
+    x-apievangelist-note: >-
+      Verified empty (X-WP-Total: 0) on 2026-08-06. Do not build a news pipeline on this route.
+      Allotex publishes announcements to LinkedIn, and its own Press page says so.
+
+- target: $.paths['/mcp'].get
+  update:
+    x-apievangelist-note: >-
+      Discoverable, not usable. A tools/list JSON-RPC POST to
+      /mcp/mcp-adapter-default-server returns 401 rest_forbidden. No MCPServer pointer is emitted
+      for this provider. See mcp/allotex-mcp.yml for the full evidence and the reasoning.
+
+- target: $.paths['/wp/v2/users'].get
+  update:
+    x-apievangelist-pii: none-observed
+    x-apievangelist-note: >-
+      2 records, both CMS operator accounts. No email, role or personal data in view context. The
+      named staff and advisory board members on the site's pages are prose, not user records.
+
+- target: $.paths['/wp/v2/pages'].get
+  update:
+    x-apievangelist-primary-surface: true
+    x-apievangelist-note: >-
+      The one route worth consuming. content.rendered is populated, so this returns the company's
+      own account of its science, device history, procedure and the conditions it treats. Slugs do
+      not match titles on this site - key on id or title. See data-model/allotex-data-model.yml.
+
+- target: $.components.securitySchemes.applicationPassword
+  update:
+    x-apievangelist-obtainable: false

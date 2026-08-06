@@ -1,0 +1,49 @@
+generated: '2026-08-06'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+note: >-
+  Scoped to hosts Allotex controls. The mechanical probe also resolved developer.wordpress.org /
+  wordpress.org because the Content API humanURL points at the upstream WordPress REST handbook;
+  those are not Allotex infrastructure and have been removed. Both Allotex hosts are the same
+  WordPress multisite install, served from Kinsta behind Cloudflare (observed response headers:
+  server: cloudflare, ki-edge, x-kinsta-cache).
+hosts:
+- host: us.allotex.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 22 21:19:24 2026 GMT
+  hsts: false
+- host: allotex.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 22 21:19:24 2026 GMT
+  hsts: false
+domains:
+- domain: allotex.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none
+findings:
+- id: no-hsts
+  severity: low
+  detail: >-
+    Neither us.allotex.com nor allotex.com returns a Strict-Transport-Security header, so a first
+    request over http is not protected against downgrade.
+- id: no-caa
+  severity: informational
+  detail: >-
+    allotex.com publishes no CAA record, so any public CA may issue for the domain.
+- id: no-dnssec
+  severity: informational
+  detail: allotex.com is not DNSSEC-signed.
+- id: dmarc-policy-none
+  severity: low
+  detail: >-
+    allotex.com publishes SPF and a DMARC record, but the DMARC policy is p=none - failures are
+    reported, not rejected or quarantined.
+- id: x-content-type-options-present
+  severity: informational
+  detail: >-
+    The REST API responses do carry x-content-type-options: nosniff and x-robots-tag: noindex.

@@ -1,18 +1,112 @@
 aid: allotex
 name: Allotex
-description: 'Allotex is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Allotex Inc. is an ophthalmic biologics and medical device company headquartered at 27-43
+  Wormwood Street, Suite 160, Boston, Massachusetts, with European operations. Founded by Drs.
+  Michael Mrochen and David Muller, it develops tissue-addition therapies for presbyopia,
+  hyperopia and myopia. Its lead product, the Allotex TransForm corneal allograft, is a
+  20-micron-thick, 2.75mm-diameter disc of acellular human donor cornea shaped with an excimer
+  laser under OCT measurement, sterilised by electron-beam radiation and shelf-stable for two
+  years, implanted beneath a femtosecond-laser flap or on the corneal surface where it integrates
+  with the patient's own cornea as, in the company's framing, a permanent living contact lens.
+  Because the implant adds biocompatible human tissue rather than ablating tissue or inserting a
+  synthetic inlay, the company positions the procedure as removable and replaceable. Allotex has
+  run TransForm clinical trials for hyperopia and for intrastromal and sub-epithelial presbyopia
+  correction, submitted an IDE to the U.S. FDA in May 2025 for its Allo-1 corneal implant, received
+  FDA IDE approval for a U.S. presbyopia study in January 2026, and partners with Daicel High
+  Performance Polymers and its TOPAS Advanced Polymers business on next-generation allograft
+  technology. Allotex runs no developer program and publishes no product API, no developer portal,
+  no API reference, no SDKs and no status page. The only machine-readable surface reachable without
+  credentials is the WordPress REST content API behind us.allotex.com, catalogued here.
+image: https://us.allotex.com/wp-content/uploads/sites/2/2021/08/allotex-logo-dark.png
 url: https://raw.githubusercontent.com/api-evangelist/allotex/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enriched
 specificationVersion: '0.20'
 created: '2026-08-06'
 modified: '2026-08-06'
 tags:
 - Company
-apis: []
+- medical-devices
+- ophthalmology
+- biologics
+- vision-correction
+- corneal-allograft
+- presbyopia
+- hyperopia
+- refractive-surgery
+- tissue-processing
+- life-sciences
+- clinical-trials
+- content-api
+apis:
+- aid: allotex:allotex-content-api
+  name: Allotex Content API
+  description: >-
+    The anonymously readable WordPress REST API behind us.allotex.com. It exposes the 16 published
+    corporate pages (Home, For Europe, About Us, Science, History, Conditions We Treat, Procedure,
+    Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences, Blog,
+    Contact and Privacy Policy), the 218-item media library with its generated size variants, the
+    category and tag taxonomies, the registered post types, taxonomies and statuses, public author
+    records, cross-content search, block-based navigation, and the oEmbed 1.0 provider endpoint.
+    Two things a consumer must know. First, unlike many Elementor-built sites, content.rendered IS
+    populated here, so the full prose of every corporate and clinical page is retrievable, which
+    makes this a usable source for the company's own account of its science, its device history
+    and the conditions it treats. Second, the posts collection is registered but EMPTY: the Press
+    page directs readers to Allotex's LinkedIn page for news rather than publishing an on-site
+    article feed, so there is nothing to poll for announcements. This is not a developer product
+    Allotex markets; it is the site's own content surface, registered at /wp-json/ and verified to
+    return data without credentials. The OpenAPI in this repo is derived from the published route
+    index.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - content
+  - wordpress
+  - corporate
+  - media
+  - oembed
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-content-openapi.yml
+  - type: Overlay
+    url: overlays/allotex-content-overlay.yaml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
+  x-contract-provenance: >-
+    Derived by the API Evangelist enrichment pipeline from the WordPress REST route index the site
+    publishes at https://us.allotex.com/wp-json/ - 270 routes across the namespaces oembed/1.0,
+    fluent-smtp, contact-form-7/v1, sliderrevolution, rankmath/v1 (and its setupWizard,
+    ai-visibility, an, in and status children), elementor-one/v1, elementor/v1,
+    elementor/v1/documents, elementor-ai/v1, elementor/v1/feedback, mcp, wp/v2,
+    wp-site-health/v1, wp-block-editor/v1 and wp-abilities/v1 - and verified against live anonymous
+    responses on 2026-08-06. Only the 25 operations that returned data without credentials are
+    modelled. Notably the site registers BOTH the WordPress Abilities API (wp-abilities/v1) and an
+    MCP Adapter default server (/mcp/mcp-adapter-default-server, advertised anonymously at
+    /wp-json/mcp with GET/POST/DELETE), but a JSON-RPC tools/list POST to the server returns 401
+    rest_forbidden and every wp-abilities/v1 endpoint returns 401 rest_forbidden, so no MCP or
+    agent surface is claimed for this provider - see mcp/allotex-mcp.yml. /wp/v2/settings,
+    /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins and /wp/v2/block-patterns/patterns all return
+    401 rest_forbidden; /contact-form-7/v1/contact-forms returns 403 wpcf7_forbidden. The sibling
+    host allotex.com serves the same WordPress multisite install as a one-page splash gate: its
+    /wp/v2/posts collection returns 6 unmodified Elementor demo-theme articles ("18 Productivity
+    Tips for Remote Working", "How to Do a SWOT Analysis") and its /wp/v2/comments collection
+    returns 9,551 unmoderated spam records against them - none of it Allotex material, so it is
+    recorded as a second server but not treated as content. Allotex publishes no developer
+    documentation, no API reference, no getting-started guide, no changelog, no status page and no
+    support channel for this surface, so no Documentation/APIReference/GettingStarted/ChangeLog/
+    StatusPage pointers are emitted; the humanURL above is the upstream WordPress REST handbook
+    that defines the wp/v2 contract.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +114,69 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://us.allotex.com/
+- type: About
+  url: https://us.allotex.com/for-europe/about-us/
+- type: Science
+  url: https://us.allotex.com/for-europe/tissue-processing/
+- type: History
+  url: https://us.allotex.com/for-europe/tissue-processing/eu-footer/
+- type: Procedure
+  url: https://us.allotex.com/procedure/
+- type: RefractiveSurgeons
+  url: https://us.allotex.com/for-europe/tissue-processing/refractive-surgeons/
+- type: ConditionsTreated
+  url: https://us.allotex.com/for-europe/about-us/founders/
+- type: MedicalAdvisoryBoard
+  url: https://us.allotex.com/for-europe/about-us/clinical-leaders/
+- type: Leadership
+  url: https://us.allotex.com/for-europe/about-us/leadership/
+- type: Careers
+  url: https://us.allotex.com/for-europe/about-us/our-team/
+- type: Press
+  url: https://us.allotex.com/for-europe/news-feed/
+- type: Events
+  url: https://us.allotex.com/for-europe/conferances/
+- type: Contact
+  url: https://us.allotex.com/for-europe/contact/
+- type: Support
+  url: https://us.allotex.com/for-europe/contact/
+- type: PrivacyPolicy
+  url: https://us.allotex.com/privacy-policy/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/allotex/
+- type: Instagram
+  url: https://www.instagram.com/allotexspa/
+- type: Facebook
+  url: https://www.facebook.com/AllotexSPA/
+- type: Sitemap
+  url: https://us.allotex.com/sitemap_index.xml
+- type: SecondaryMarket
   url: https://www.nasdaqprivatemarket.com/
+- type: Authentication
+  url: authentication/allotex-authentication.yml
+- type: Conventions
+  url: conventions/allotex-conventions.yml
+- type: Conformance
+  url: conformance/allotex-conformance.yml
+- type: ErrorCatalog
+  url: errors/allotex-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/allotex-lifecycle.yml
+- type: DataModel
+  url: data-model/allotex-data-model.yml
+- type: JSONLD
+  url: json-ld/allotex-json-ld.yml
+- type: WellKnown
+  url: well-known/allotex-well-known.yml
+- type: DomainSecurity
+  url: security/allotex-domain-security.yml
+- type: LLMsTxt
+  url: llms/allotex-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-06'
+  status: enriched
+  artifacts_added: 18
+  pass: local-v1

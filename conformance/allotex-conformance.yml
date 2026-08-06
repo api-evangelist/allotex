@@ -1,0 +1,123 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml + live probes 2026-08-06
+api: allotex:allotex-content-api
+
+summary: >-
+  A derived conformance read of the WordPress REST content surface behind us.allotex.com. Allotex
+  makes no compliance or standards claims of its own anywhere on its site - no trust centre, no
+  certifications page, no security policy - so no `Compliance` pointer is emitted. The entries
+  below assert only what the wire evidence supports.
+
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: openapi/allotex-content-openapi.yml is a valid OpenAPI 3.1.0 document derived by API Evangelist, not published by Allotex
+  published_by_provider: false
+
+- id: rest
+  conforms: true
+  evidence: >-
+    Resource-oriented paths, GET semantics, JSON representations, hypermedia _links on every
+    record, and RFC 8288 Link pagination headers.
+
+- id: rfc8288-web-linking
+  conforms: true
+  evidence: 'Verified: GET /wp/v2/pages?per_page=1 returned `link: <...&page=2>; rel="next"`'
+
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use application/json with code/message/data.status, not application/problem+json with
+    type/title/status/detail. See errors/allotex-problem-types.yml.
+
+- id: oembed-1.0
+  conforms: true
+  evidence: >-
+    /wp-json/oembed/1.0/embed returns a valid oEmbed 1.0 rich response (version, provider_name
+    "Allotex US", provider_url, author, title, thumbnail, html). Verified against
+    https://us.allotex.com/procedure/.
+
+- id: schema-org
+  conforms: true
+  evidence: >-
+    Rank Math emits a schema.org @graph on every page with Organization, WebSite, WebPage,
+    ImageObject, Person and Article nodes. Captured in json-ld/allotex-organization.jsonld.
+
+- id: json-ld-1.1
+  conforms: true
+  evidence: '@context https://schema.org, embedded as application/ld+json'
+
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securityScheme; the route index advertises application-passwords only.
+
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on both hosts.
+
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on both hosts.
+
+- id: rfc8615-well-known
+  conforms: false
+  evidence: No /.well-known/ document is served on either host; all 22 probes returned 404.
+
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No Sunset or Deprecation header observed; no deprecation policy published.
+
+- id: mcp
+  conforms: partial
+  evidence: >-
+    An MCP Adapter server is registered and anonymously discoverable at /wp-json/mcp, but
+    tools/list returns 401 rest_forbidden and the endpoint is undocumented. Discovery conforms;
+    the capability surface is unreachable. See mcp/allotex-mcp.yml.
+
+- id: a2a
+  conforms: false
+  evidence: >-
+    No agent card at /.well-known/agent-card.json or the legacy /.well-known/agent.json on either
+    host (404, 404). Nothing was written to a2a/.
+
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No event, streaming or webhook surface exists. Not penalised - a company with no events is not
+    expected to publish AsyncAPI.
+
+- id: gdpr
+  conforms: unknown
+  evidence: >-
+    A privacy policy is published at https://us.allotex.com/privacy-policy/ and the company has EU
+    operations, but no GDPR statement, DPA, or data-processing disclosure was found. Not asserted.
+
+- id: hipaa
+  conforms: unknown
+  evidence: >-
+    Allotex handles human donor tissue and runs clinical trials, so a HIPAA posture almost
+    certainly exists internally, but nothing is published. The catalogued API carries no PHI - it
+    serves marketing content only.
+
+- id: iso-13485
+  conforms: unknown
+  evidence: >-
+    Expected for a medical device manufacturer with EU operations, but Allotex publishes no
+    certifications page. Not asserted.
+
+not_asserted:
+- soc2
+- iso-27001
+- pci-dss
+- fedramp
+- fhir
+- fapi
+- scim
+- odata
+- json-api
+- psd2
+not_asserted_reason: >-
+  No published claim and no wire evidence. Allotex is a medical device company with a marketing
+  website; asserting an enterprise security or health-data standard on that basis would be
+  fabrication.

@@ -1,0 +1,105 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://us.allotex.com/#organization",
+      "name": "Allotex",
+      "url": "https://us.allotex.com",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://us.allotex.com/#logo",
+        "url": "https://us.allotex.com/wp-content/uploads/sites/2/2021/08/allotex-logo-dark.png",
+        "contentUrl": "https://us.allotex.com/wp-content/uploads/sites/2/2021/08/allotex-logo-dark.png",
+        "caption": "Allotex",
+        "inLanguage": "en-US",
+        "width": "260",
+        "height": "51"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://us.allotex.com/#website",
+      "url": "https://us.allotex.com",
+      "name": "Allotex",
+      "alternateName": "Allograft Inlays &amp; Onlays",
+      "publisher": {
+        "@id": "https://us.allotex.com/#organization"
+      },
+      "inLanguage": "en-US",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://us.allotex.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://us.allotex.com/wp-content/uploads/sites/2/2023/12/019.webp",
+      "url": "https://us.allotex.com/wp-content/uploads/sites/2/2023/12/019.webp",
+      "width": "600",
+      "height": "700",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://us.allotex.com/#webpage",
+      "url": "https://us.allotex.com/",
+      "name": "Allotex - Allograft Inlays &amp; Onlays",
+      "datePublished": "2024-05-07T17:24:32+03:00",
+      "dateModified": "2026-06-01T23:24:00+03:00",
+      "about": {
+        "@id": "https://us.allotex.com/#organization"
+      },
+      "isPartOf": {
+        "@id": "https://us.allotex.com/#website"
+      },
+      "primaryImageOfPage": {
+        "@id": "https://us.allotex.com/wp-content/uploads/sites/2/2023/12/019.webp"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://us.allotex.com/author/allotex-admin/",
+      "name": "Allotex",
+      "url": "https://us.allotex.com/author/allotex-admin/",
+      "image": {
+        "@type": "ImageObject",
+        "@id": "https://secure.gravatar.com/avatar/573826280b221d4998e0b013134a67267dff13846d84ba0c0ef4bb2c6a5df4f5?s=96&amp;d=mm&amp;r=g",
+        "url": "https://secure.gravatar.com/avatar/573826280b221d4998e0b013134a67267dff13846d84ba0c0ef4bb2c6a5df4f5?s=96&amp;d=mm&amp;r=g",
+        "caption": "Allotex",
+        "inLanguage": "en-US"
+      },
+      "worksFor": {
+        "@id": "https://us.allotex.com/#organization"
+      }
+    },
+    {
+      "@type": "Article",
+      "headline": "Allotex - Allograft Inlays &amp; Onlays",
+      "datePublished": "2024-05-07T17:24:32+03:00",
+      "dateModified": "2026-06-01T23:24:00+03:00",
+      "author": {
+        "@id": "https://us.allotex.com/author/allotex-admin/",
+        "name": "Allotex"
+      },
+      "publisher": {
+        "@id": "https://us.allotex.com/#organization"
+      },
+      "description": "Discover Allotex&#039;s breakthrough vision technology. Explore our site for innovative tissue products revolutionizing vision correction procedures.",
+      "name": "Allotex - Allograft Inlays &amp; Onlays",
+      "@id": "https://us.allotex.com/#richSnippet",
+      "isPartOf": {
+        "@id": "https://us.allotex.com/#webpage"
+      },
+      "image": {
+        "@id": "https://us.allotex.com/wp-content/uploads/sites/2/2023/12/019.webp"
+      },
+      "inLanguage": "en-US",
+      "mainEntityOfPage": {
+        "@id": "https://us.allotex.com/#webpage"
+      }
+    }
+  ]
+}

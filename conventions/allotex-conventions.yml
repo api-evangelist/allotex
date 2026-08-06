@@ -1,0 +1,133 @@
+generated: '2026-08-06'
+method: derived
+source: openapi/allotex-content-openapi.yml + live response headers observed 2026-08-06
+api: allotex:allotex-content-api
+docs: https://developer.wordpress.org/rest-api/using-the-rest-api/
+docs_note: >-
+  Allotex publishes no conventions documentation of its own. The semantics below are those of the
+  upstream WordPress REST API, confirmed against live responses from https://us.allotex.com/wp-json.
+
+authentication:
+  anonymous_read: true
+  style: none required for any catalogued operation
+  scheme: >-
+    WordPress application passwords over HTTP Basic, the only method the route index advertises.
+    Not obtainable by a third party - no public signup exists.
+  authorization_endpoint: https://us.allotex.com/wp-admin/authorize-application.php
+  cross_reference: authentication/allotex-authentication.yml
+
+idempotency:
+  supported: false
+  detail: >-
+    No idempotency contract exists. Every catalogued operation is a GET, and the write routes the
+    install registers are all auth-gated, so there is no unsafe operation a third party can invoke
+    and therefore no Idempotency-Key header, no request-replay window and no retention policy. No
+    `type: Idempotency` pointer is emitted - see the enrichment contract's rule that the pointer is
+    only for providers with a genuine idempotency contract.
+
+pagination:
+  style: page-number
+  params:
+    page: 1-indexed page cursor, default 1
+    per_page: page size, default 10, maximum 100
+  response_headers:
+    X-WP-Total: total number of items in the collection
+    X-WP-TotalPages: total number of pages available
+  link_header:
+    supported: true
+    spec: RFC 8288
+    detail: >-
+      A Link header carries rel="next" and rel="prev". Verified 2026-08-06 on
+      /wp/v2/pages?per_page=1, which returned `link: <.../wp/v2/pages?per_page=1&page=2>;
+      rel="next"` alongside x-wp-total: 16 and x-wp-totalpages: 16.
+  over_page_behaviour: requesting a page beyond the last returns 400 rest_post_invalid_page_number
+
+field_selection:
+  sparse_fields:
+    supported: true
+    param: _fields
+    detail: Comma-separated allow-list, e.g. ?_fields=id,slug,link,title
+  expansion:
+    supported: true
+    param: _embed
+    detail: >-
+      Inlines linked resources (author, featured media, terms) into an _embedded object, driven by
+      the _links block each record already carries.
+  context:
+    supported: true
+    param: context
+    values: [view, embed, edit]
+    detail: edit context requires authentication and returns 401 rest_forbidden anonymously.
+
+filtering_and_sorting:
+  search: '?search= on every collection; a dedicated cross-type endpoint at /wp/v2/search'
+  order: '?order=asc|desc'
+  orderby: 'date, id, include, modified, parent, relevance, slug, title, menu_order (per collection)'
+  by_relation: '?parent=, ?categories=, ?tags=, ?slug=, ?media_type=, ?mime_type='
+
+metadata:
+  supported: false
+  detail: >-
+    No arbitrary key/value metadata surface. Post meta is not projected into REST on this install,
+    which is why the Elementor page-builder payloads are not retrievable even though the rendered
+    HTML is.
+
+request_tracing:
+  request_id_header: none
+  detail: >-
+    No X-Request-Id or equivalent is returned. The only correlatable identifier in a response is
+    Cloudflare's cf-ray header (e.g. a26f716bca7baded-EWR), which is edge infrastructure, not an
+    application trace id.
+
+versioning:
+  scheme: uri-path namespace
+  current: wp/v2
+  detail: >-
+    Version lives in the namespace segment (/wp-json/wp/v2/...). This is the upstream WordPress
+    version, not an Allotex version - Allotex publishes no versioning policy of its own.
+  cross_reference: lifecycle/allotex-lifecycle.yml
+
+error_envelope:
+  media_type: application/json
+  rfc9457: false
+  shape:
+    code: machine-readable string, e.g. rest_post_invalid_id
+    message: human-readable sentence
+    data.status: the HTTP status, repeated in the body
+  detail: >-
+    NOT RFC 9457 problem+json - the media type is application/json and the field names are
+    code/message/data.status rather than type/title/status/detail.
+  cross_reference: errors/allotex-problem-types.yml
+
+rate_limiting:
+  documented: false
+  headers_observed: none
+  detail: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After headers were returned on any probe. Allotex
+    publishes no rate-limit policy. The site sits behind Cloudflare and Kinsta, so an undocumented
+    edge throttle should be assumed to exist even though it is not signalled in-band.
+
+caching:
+  headers_observed:
+    cf-cache-status: DYNAMIC
+    x-kinsta-cache: BYPASS
+    vary: Accept-Encoding, Origin
+  conditional_requests: no ETag or Last-Modified returned on REST responses
+  detail: REST responses are not edge-cached; each request reaches origin.
+
+cors:
+  access-control-allow-headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+  access-control-expose-headers: X-WP-Total, X-WP-TotalPages, Link
+  detail: >-
+    The pagination headers are explicitly exposed to browser clients, so a cross-origin fetch can
+    read X-WP-Total.
+
+content_negotiation:
+  formats: [json]
+  detail: >-
+    JSON only on wp/v2. The oEmbed endpoint additionally accepts ?format=xml.
+
+security_headers:
+  x-content-type-options: nosniff
+  x-robots-tag: noindex
+  strict-transport-security: absent
