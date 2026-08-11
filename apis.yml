@@ -44,35 +44,14 @@ tags:
 apis:
 - aid: allotex:allotex-content-api
   name: Allotex Content API
-  description: >-
-    The anonymously readable WordPress REST API behind us.allotex.com. It exposes the 16 published
-    corporate pages (Home, For Europe, About Us, Science, History, Conditions We Treat, Procedure,
-    Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences, Blog,
-    Contact and Privacy Policy), the 218-item media library with its generated size variants, the
-    category and tag taxonomies, the registered post types, taxonomies and statuses, public author
-    records, cross-content search, block-based navigation, and the oEmbed 1.0 provider endpoint.
-    Two things a consumer must know. First, unlike many Elementor-built sites, content.rendered IS
-    populated here, so the full prose of every corporate and clinical page is retrievable, which
-    makes this a usable source for the company's own account of its science, its device history
-    and the conditions it treats. Second, the posts collection is registered but EMPTY: the Press
-    page directs readers to Allotex's LinkedIn page for news rather than publishing an on-site
-    article feed, so there is nothing to poll for announcements. This is not a developer product
-    Allotex markets; it is the site's own content surface, registered at /wp-json/ and verified to
-    return data without credentials. The OpenAPI in this repo is derived from the published route
-    index.
+  description: Pages, posts, reusable blocks and navigation.
   humanURL: https://developer.wordpress.org/rest-api/
   baseURL: https://us.allotex.com/wp-json
   tags:
   - content
-  - wordpress
-  - corporate
-  - media
-  - oembed
   properties:
   - type: OpenAPI
-    url: openapi/allotex-content-openapi.yml
-  - type: Overlay
-    url: overlays/allotex-content-overlay.yaml
+    url: openapi/allotex-content-api-openapi.yml
   - type: Authentication
     url: authentication/allotex-authentication.yml
   - type: ErrorCatalog
@@ -83,36 +62,116 @@ apis:
     url: data-model/allotex-data-model.yml
   - type: JSONLD
     url: json-ld/allotex-json-ld.yml
-  x-contract-provenance: >-
-    Derived by the API Evangelist enrichment pipeline from the WordPress REST route index the site
-    publishes at https://us.allotex.com/wp-json/ - 270 routes across the namespaces oembed/1.0,
-    fluent-smtp, contact-form-7/v1, sliderrevolution, rankmath/v1 (and its setupWizard,
-    ai-visibility, an, in and status children), elementor-one/v1, elementor/v1,
-    elementor/v1/documents, elementor-ai/v1, elementor/v1/feedback, mcp, wp/v2,
-    wp-site-health/v1, wp-block-editor/v1 and wp-abilities/v1 - and verified against live anonymous
-    responses on 2026-08-06. Only the 25 operations that returned data without credentials are
-    modelled. Notably the site registers BOTH the WordPress Abilities API (wp-abilities/v1) and an
-    MCP Adapter default server (/mcp/mcp-adapter-default-server, advertised anonymously at
-    /wp-json/mcp with GET/POST/DELETE), but a JSON-RPC tools/list POST to the server returns 401
-    rest_forbidden and every wp-abilities/v1 endpoint returns 401 rest_forbidden, so no MCP or
-    agent surface is claimed for this provider - see mcp/allotex-mcp.yml. /wp/v2/settings,
-    /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins and /wp/v2/block-patterns/patterns all return
-    401 rest_forbidden; /contact-form-7/v1/contact-forms returns 403 wpcf7_forbidden. The sibling
-    host allotex.com serves the same WordPress multisite install as a one-page splash gate: its
-    /wp/v2/posts collection returns 6 unmodified Elementor demo-theme articles ("18 Productivity
-    Tips for Remote Working", "How to Do a SWOT Analysis") and its /wp/v2/comments collection
-    returns 9,551 unmoderated spam records against them - none of it Allotex material, so it is
-    recorded as a second server but not treated as content. Allotex publishes no developer
-    documentation, no API reference, no getting-started guide, no changelog, no status page and no
-    support channel for this surface, so no Documentation/APIReference/GettingStarted/ChangeLog/
-    StatusPage pointers are emitted; the humanURL above is the upstream WordPress REST handbook
-    that defines the wp/v2 contract.
+- aid: allotex:allotex-discovery-api
+  name: Allotex Discovery API
+  description: Route index, cross-content search and the oEmbed provider endpoint.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-discovery-api-openapi.yml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
+- aid: allotex:allotex-identity-api
+  name: Allotex Identity API
+  description: Public author records.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - identity
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-identity-api-openapi.yml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
+- aid: allotex:allotex-media-api
+  name: Allotex Media API
+  description: The 218-item media library and its size variants.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - media
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-media-api-openapi.yml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
+- aid: allotex:allotex-schema-api
+  name: Allotex Schema API
+  description: Registered post types, taxonomies and statuses.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - schema
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-schema-api-openapi.yml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
+- aid: allotex:allotex-taxonomy-api
+  name: Allotex Taxonomy API
+  description: Categories and tags.
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://us.allotex.com/wp-json
+  tags:
+  - taxonomy
+  properties:
+  - type: OpenAPI
+    url: openapi/allotex-taxonomy-api-openapi.yml
+  - type: Authentication
+    url: authentication/allotex-authentication.yml
+  - type: ErrorCatalog
+    url: errors/allotex-problem-types.yml
+  - type: Conventions
+    url: conventions/allotex-conventions.yml
+  - type: DataModel
+    url: data-model/allotex-data-model.yml
+  - type: JSONLD
+    url: json-ld/allotex-json-ld.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: mcp/allotex-mcp.yml
+- type: Overlay
+  url: overlays/allotex-content-overlay.yaml
 - type: Website
   url: https://us.allotex.com/
 - type: About
