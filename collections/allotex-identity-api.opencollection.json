@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Allotex Content Identity API",
+    "version": "wp/v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "identity",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List public authors",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/users",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              }
+            ]
+          },
+          "docs": "Lists users who have authored public content. Verified 2026-08-06: 2 records, both site-operator accounts (T20Admin, Allotex) rather than named staff — no personal data beyond a display name, avatar and author archive link is exposed anonymously."
+        },
+        {
+          "info": {
+            "name": "Get a public author",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/users/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the object."
+              }
+            ]
+          },
+          "docs": "Retrieves a single public author record. Verified against user 1 (T20Admin)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

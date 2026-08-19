@@ -3,13 +3,10 @@ method: probed
 source: https://us.allotex.com/wp-json/mcp
 status: discovered-gated
 claimed_as_agent_surface: false
-
-summary: >-
-  us.allotex.com registers an MCP endpoint. It is real and it is discoverable without credentials,
-  but it is NOT usable by any third party, and this repo therefore does NOT emit a
-  `type: MCPServer` pointer for Allotex. Recording the endpoint here, without claiming the agent
-  surface, is the honest reading of what was found.
-
+summary: 'us.allotex.com registers an MCP endpoint. It is real and it is discoverable without credentials,
+  but it is NOT usable by any third party, and this repo therefore does NOT emit a `type: MCPServer` pointer
+  for Allotex. Recording the endpoint here, without claiming the agent surface, is the honest reading
+  of what was found.'
 discovery:
   namespace_index:
     url: https://us.allotex.com/wp-json/mcp
@@ -17,13 +14,16 @@ discovery:
     fetched: '2026-08-06'
     routes:
     - path: /mcp
-      methods: [GET]
+      methods:
+      - GET
     - path: /mcp/mcp-adapter-default-server
-      methods: [POST, GET, DELETE]
+      methods:
+      - POST
+      - GET
+      - DELETE
   server_endpoint: https://us.allotex.com/wp-json/mcp/mcp-adapter-default-server
   transport: http
   protocol: JSON-RPC 2.0
-
 probe:
   method: tools/list
   request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
@@ -31,35 +31,46 @@ probe:
   http_status: 401
   response: '{"code":"rest_forbidden","message":"Sorry, you are not allowed to do that.","data":{"status":401}}'
   fetched: '2026-08-06'
-
 related:
   wp_abilities_api:
-    note: >-
-      The site also registers the WordPress Abilities API (wp-abilities/v1), the agent-facing
-      capability registry the MCP Adapter projects into tools.
+    note: The site also registers the WordPress Abilities API (wp-abilities/v1), the agent-facing capability
+      registry the MCP Adapter projects into tools.
     endpoints_probed:
-    - {path: /wp-json/wp-abilities/v1/abilities, http_status: 401, code: rest_forbidden}
-    - {path: /wp-json/wp-abilities/v1, http_status: 401, code: rest_forbidden}
-
+    - path: /wp-json/wp-abilities/v1/abilities
+      http_status: 401
+      code: rest_forbidden
+    - path: /wp-json/wp-abilities/v1
+      http_status: 401
+      code: rest_forbidden
 tools: []
-tools_note: >-
-  No tool list is recorded. tools/list is auth-gated and no published tool inventory exists to fall
-  back on - Allotex ships no llms.txt and no documentation of this endpoint. Enumerating tools by
-  guessing at the WordPress MCP Adapter's defaults would be fabrication, so the list is left empty.
-
-why_no_mcpserver_pointer: >-
-  Three reasons, all of them evidence rather than judgement. (1) The only authentication method the
-  route index advertises is WordPress application passwords, issued exclusively to user accounts on
-  the site's own wp-admin; Allotex operates no public signup, so a developer cannot obtain a
-  credential by any route. (2) Allotex does not document, reference or market this endpoint
-  anywhere on its site - it is the default server the MCP Adapter plugin registers on activation,
-  not a product decision the company communicated. (3) The enrichment contract asks for an
-  "official hosted/remote MCP server"; a plugin default that returns 401 to every caller is not
-  one. This matches the treatment of the same gated Abilities API at all/nacuity-pharmaceuticals/.
-  If Allotex later documents this endpoint and issues credentials, the pointer should be added.
-
+tools_note: No tool list is recorded. tools/list is auth-gated and no published tool inventory exists
+  to fall back on - Allotex ships no llms.txt and no documentation of this endpoint. Enumerating tools
+  by guessing at the WordPress MCP Adapter's defaults would be fabrication, so the list is left empty.
+why_no_mcpserver_pointer: Three reasons, all of them evidence rather than judgement. (1) The only authentication
+  method the route index advertises is WordPress application passwords, issued exclusively to user accounts
+  on the site's own wp-admin; Allotex operates no public signup, so a developer cannot obtain a credential
+  by any route. (2) Allotex does not document, reference or market this endpoint anywhere on its site
+  - it is the default server the MCP Adapter plugin registers on activation, not a product decision the
+  company communicated. (3) The enrichment contract asks for an "official hosted/remote MCP server"; a
+  plugin default that returns 401 to every caller is not one. This matches the treatment of the same gated
+  Abilities API at all/nacuity-pharmaceuticals/. If Allotex later documents this endpoint and issues credentials,
+  the pointer should be added.
 x-evidence:
-- {url: 'https://us.allotex.com/wp-json/mcp', http_status: 200, fetched: '2026-08-06'}
-- {url: 'https://us.allotex.com/wp-json/mcp/mcp-adapter-default-server', method: POST, http_status: 401, fetched: '2026-08-06'}
-- {url: 'https://us.allotex.com/wp-json/wp-abilities/v1/abilities', http_status: 401, fetched: '2026-08-06'}
-- {url: 'https://us.allotex.com/.well-known/mcp.json', http_status: 404, fetched: '2026-08-06'}
+- url: https://us.allotex.com/wp-json/mcp
+  http_status: 200
+  fetched: '2026-08-06'
+- url: https://us.allotex.com/wp-json/mcp/mcp-adapter-default-server
+  method: POST
+  http_status: 401
+  fetched: '2026-08-06'
+- url: https://us.allotex.com/wp-json/wp-abilities/v1/abilities
+  http_status: 401
+  fetched: '2026-08-06'
+- url: https://us.allotex.com/.well-known/mcp.json
+  http_status: 404
+  fetched: '2026-08-06'
+deployment:
+  mode: unclear
+  verified: searched
+  checked: '2026-08-12'
+  source: catalog MCP census

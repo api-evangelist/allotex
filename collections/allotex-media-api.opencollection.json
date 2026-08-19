@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Allotex Content Media API",
+    "version": "wp/v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "media",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List media items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/media",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              },
+              {
+                "name": "media_type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "mime_type",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists the media library. Verified 2026-08-06: 218 items (X-WP-Total: 218) — the clinical imagery, product photography, team headshots and logo assets used across the site, each with its generated size variants under media_details.sizes."
+        },
+        {
+          "info": {
+            "name": "Get a media item",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/media/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the object."
+              }
+            ]
+          },
+          "docs": "Retrieves a single attachment by numeric ID."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,123 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Allotex Content Schema API",
+    "version": "wp/v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "schema",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List registered post types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/types",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the registered post types, their rest_base and their taxonomies."
+        },
+        {
+          "info": {
+            "name": "Get a registered post type",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/types/:type",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "path",
+                "description": "An alphanumeric identifier for the post type."
+              }
+            ]
+          },
+          "docs": "Retrieves a single post type. Verified against 'page'."
+        },
+        {
+          "info": {
+            "name": "List registered taxonomies",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/taxonomies",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to taxonomies associated with a specific post type."
+              }
+            ]
+          },
+          "docs": "Returns the registered taxonomies and the post types they apply to."
+        },
+        {
+          "info": {
+            "name": "Get a registered taxonomy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/taxonomies/:taxonomy",
+            "params": [
+              {
+                "name": "taxonomy",
+                "value": "",
+                "type": "path",
+                "description": "An alphanumeric identifier for the taxonomy."
+              }
+            ]
+          },
+          "docs": "Retrieves a single taxonomy. Verified against 'category'."
+        },
+        {
+          "info": {
+            "name": "List post statuses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/statuses"
+          },
+          "docs": "Returns the publicly visible post statuses. Verified 2026-08-06: only 'publish'."
+        },
+        {
+          "info": {
+            "name": "Get a post status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/statuses/:status",
+            "params": [
+              {
+                "name": "status",
+                "value": "",
+                "type": "path",
+                "description": "An alphanumeric identifier for the status."
+              }
+            ]
+          },
+          "docs": "Retrieves a single post status. Verified against 'publish'."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

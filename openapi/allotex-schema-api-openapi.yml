@@ -1,0 +1,270 @@
+openapi: 3.2.0
+info:
+  title: Allotex Content Schema API
+  version: wp/v2
+  summary: The anonymously readable WordPress REST content API behind us.allotex.com.
+  description: 'Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
+
+
+    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
+
+
+    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex''s LinkedIn page for news, so there is no on-site article feed to consume.
+
+
+    This is not a product Allotex markets. It is the site''s own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.'
+  contact:
+    name: Allotex Inc.
+    url: https://us.allotex.com/for-europe/contact/
+  license:
+    name: GPL-2.0-or-later
+    identifier: GPL-2.0-or-later
+  x-provenance:
+    method: derived
+    source: https://us.allotex.com/wp-json/
+    derived_by: API Evangelist enrichment pipeline
+    verified: '2026-08-06'
+    note: Operation set restricted to routes verified to return 200 anonymously. Schemas are modelled from live response bodies and the upstream WordPress REST API handbook; no field is invented.
+servers:
+- url: https://us.allotex.com/wp-json
+  description: Allotex US corporate site (16 pages, 218 media items)
+- url: https://allotex.com/wp-json
+  description: Allotex global splash site (1 page; posts are unmodified theme demo content)
+security: []
+tags:
+- name: schema
+  description: Registered post types, taxonomies and statuses.
+paths:
+  /wp/v2/types:
+    get:
+      operationId: listTypes
+      summary: List registered post types
+      description: Returns the registered post types, their rest_base and their taxonomies.
+      tags:
+      - schema
+      parameters:
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - view
+          - embed
+          - edit
+          default: view
+      responses:
+        '200':
+          description: A map of post types keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/PostType'
+  /wp/v2/types/{type}:
+    get:
+      operationId: getType
+      summary: Get a registered post type
+      description: Retrieves a single post type. Verified against 'page'.
+      tags:
+      - schema
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: An alphanumeric identifier for the post type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A post type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostType'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /wp/v2/taxonomies:
+    get:
+      operationId: listTaxonomies
+      summary: List registered taxonomies
+      description: Returns the registered taxonomies and the post types they apply to.
+      tags:
+      - schema
+      parameters:
+      - name: type
+        in: query
+        required: false
+        description: Limit results to taxonomies associated with a specific post type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A map of taxonomies keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Taxonomy'
+  /wp/v2/taxonomies/{taxonomy}:
+    get:
+      operationId: getTaxonomy
+      summary: Get a registered taxonomy
+      description: Retrieves a single taxonomy. Verified against 'category'.
+      tags:
+      - schema
+      parameters:
+      - name: taxonomy
+        in: path
+        required: true
+        description: An alphanumeric identifier for the taxonomy.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A taxonomy.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Taxonomy'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /wp/v2/statuses:
+    get:
+      operationId: listStatuses
+      summary: List post statuses
+      description: 'Returns the publicly visible post statuses. Verified 2026-08-06: only ''publish''.'
+      tags:
+      - schema
+      parameters: []
+      responses:
+        '200':
+          description: A map of statuses keyed by slug.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /wp/v2/statuses/{status}:
+    get:
+      operationId: getStatus
+      summary: Get a post status
+      description: Retrieves a single post status. Verified against 'publish'.
+      tags:
+      - schema
+      parameters:
+      - name: status
+        in: path
+        required: true
+        description: An alphanumeric identifier for the status.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A post status.
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    RestError:
+      type: object
+      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
+      required:
+      - code
+      - message
+      - data
+      properties:
+        code:
+          type: string
+          example: rest_post_invalid_id
+        message:
+          type: string
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            params:
+              type: object
+            details:
+              type: object
+    Taxonomy:
+      type: object
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        types:
+          type: array
+          items:
+            type: string
+        hierarchical:
+          type: boolean
+        rest_base:
+          type: string
+        rest_namespace:
+          type: string
+    PostType:
+      type: object
+      properties:
+        description:
+          type: string
+        hierarchical:
+          type: boolean
+        has_archive:
+          type: boolean
+        name:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+          nullable: true
+        taxonomies:
+          type: array
+          items:
+            type: string
+        rest_base:
+          type: string
+        rest_namespace:
+          type: string
+  responses:
+    NotFound:
+      description: The resource or route does not exist (rest_post_invalid_id / rest_no_route).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+          examples:
+            invalid_id:
+              value:
+                code: rest_post_invalid_id
+                message: Invalid post ID.
+                data:
+                  status: 404
+            no_route:
+              value:
+                code: rest_no_route
+                message: No route was found matching the URL and request method.
+                data:
+                  status: 404
+  securitySchemes:
+    applicationPassword:
+      type: http
+      scheme: basic
+      description: 'WordPress application passwords, the only authentication method the route index advertises (authorization endpoint: https://us.allotex.com/wp-admin/authorize-application.php). Credentials are issued only to WordPress user accounts on the site; Allotex offers no public signup, so this scheme is NOT obtainable by a third party. Every operation in this document is reachable anonymously and none of them requires it.'
+externalDocs:
+  description: The upstream WordPress REST API handbook that defines the wp/v2 contract. Allotex publishes no documentation of its own for this surface.
+  url: https://developer.wordpress.org/rest-api/

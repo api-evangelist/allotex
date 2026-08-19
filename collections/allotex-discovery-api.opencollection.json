@@ -1,0 +1,154 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Allotex Content Discovery API",
+    "version": "wp/v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "discovery",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the API route index",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query",
+                "description": "Restrict the index to a single namespace, e.g. wp/v2."
+              }
+            ]
+          },
+          "docs": "Returns the site discovery document: name, description, URL, registered namespaces, the full route table (270 routes across 20 namespaces on this site) and the supported authentication methods. This is the WordPress REST API's own machine-readable index and is the only contract Allotex publishes."
+        },
+        {
+          "info": {
+            "name": "Search across content types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/search",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "subtype",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Cross-content search returning lightweight {id, title, url, type, subtype} records. Verified 2026-08-06 with search=cornea, which returns the Medical Advisory Board, Science and Conditions We Treat pages. 21 searchable items total."
+        },
+        {
+          "info": {
+            "name": "Get an oEmbed response for a site URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/oembed/1.0/embed",
+            "params": [
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "The URL of the resource for which to fetch oEmbed data."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "maxwidth",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "oEmbed 1.0 provider endpoint. Returns provider_name 'Allotex US', the author, the title, a thumbnail and an iframe embed for any URL on this site. Verified against https://us.allotex.com/procedure/."
+        },
+        {
+          "info": {
+            "name": "Get the MCP namespace route index",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/mcp",
+            "params": [
+              {
+                "name": "namespace",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the routes registered under the 'mcp' namespace. Verified 2026-08-06: 200, advertising /mcp/mcp-adapter-default-server (GET/POST/DELETE). This is the WordPress MCP Adapter's default server. It is DISCOVERABLE anonymously but NOT USABLE: a JSON-RPC tools/list POST to the server endpoint returns 401 rest_forbidden. Allotex does not document, market or issue credentials for this endpoint, so no MCP agent surface is claimed for this provider. See mcp/allotex-mcp.yml."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

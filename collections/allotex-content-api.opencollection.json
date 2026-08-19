@@ -1,0 +1,373 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Allotex Content API",
+    "version": "wp/v2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "content",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List pages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/pages",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              },
+              {
+                "name": "parent",
+                "value": "",
+                "type": "query",
+                "description": "Limit result set to items with a specific parent page ID."
+              },
+              {
+                "name": "slug",
+                "value": "",
+                "type": "query",
+                "description": "Limit result set to posts with one or more specific slugs."
+              },
+              {
+                "name": "orderby",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists the published pages of us.allotex.com. Verified 2026-08-06: 16 pages (X-WP-Total: 16) covering Home, For Europe, About Us, Our Team, Medical Advisory Board, Conditions We Treat, Careers, Science, History, Refractive Surgeons, Procedure, Press, Conferences, Blog, Contact and Privacy Policy. Unlike many Elementor-built sites, content.rendered is POPULATED on this site, so the full prose of each corporate page is retrievable."
+        },
+        {
+          "info": {
+            "name": "Get a page",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/pages/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the object."
+              },
+              {
+                "name": "context",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieves a single page by numeric ID. Verified against page 11284 (Home)."
+        },
+        {
+          "info": {
+            "name": "List posts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/posts",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              },
+              {
+                "name": "categories",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "slug",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists blog posts. Verified 2026-08-06: the collection is registered but EMPTY on us.allotex.com (X-WP-Total: 0) — Allotex publishes news through its LinkedIn page rather than an on-site blog, and its Press page says so explicitly. The sibling site allotex.com returns 6 posts, all of which are unmodified Elementor demo-theme content, not Allotex material."
+        },
+        {
+          "info": {
+            "name": "Get a post",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/posts/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the object."
+              }
+            ]
+          },
+          "docs": "Retrieves a single post by numeric ID."
+        },
+        {
+          "info": {
+            "name": "List approved comments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/comments",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              },
+              {
+                "name": "post",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists approved comments. Verified 2026-08-06: 0 comments on us.allotex.com. The sibling site allotex.com returns X-WP-Total: 9551 on the same route, which is unmoderated comment spam accumulated against demo-theme posts, not Allotex content."
+        },
+        {
+          "info": {
+            "name": "List reusable blocks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/blocks",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              }
+            ]
+          },
+          "docs": "Lists reusable editor blocks. Verified 2026-08-06: empty on this site."
+        },
+        {
+          "info": {
+            "name": "List navigation menus",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://us.allotex.com/wp-json/wp/v2/navigation",
+            "params": [
+              {
+                "name": "context",
+                "value": "",
+                "type": "query",
+                "description": "Scope under which the request is made; determines fields present in the response."
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Current page of the collection."
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to be returned in the result set."
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Limit results to those matching a string."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Order sort attribute ascending or descending."
+              },
+              {
+                "name": "_fields",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of fields to limit the response to."
+              },
+              {
+                "name": "_embed",
+                "value": "",
+                "type": "query",
+                "description": "Embed linked resources (author, featured media, terms) into the response."
+              }
+            ]
+          },
+          "docs": "Lists block-based navigation menus. Verified 2026-08-06: 1 menu. Note that the classic menu routes (/wp/v2/menu-items) return 401 anonymously."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
