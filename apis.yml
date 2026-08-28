@@ -18,6 +18,17 @@ description: >-
   technology. Allotex runs no developer program and publishes no product API, no developer portal,
   no API reference, no SDKs and no status page. The only machine-readable surface reachable without
   credentials is the WordPress REST content API behind us.allotex.com, catalogued here.
+deliveryModel:
+  model: unknown
+  open_source: false
+  commercial: false
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  generated: '2026-08-28'
+  method: derived
 image: https://us.allotex.com/wp-content/uploads/sites/2/2021/08/allotex-logo-dark.png
 url: https://raw.githubusercontent.com/api-evangelist/allotex/refs/heads/main/apis.yml
 x-type: company
