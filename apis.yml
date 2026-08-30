@@ -40,17 +40,17 @@ created: '2026-08-06'
 modified: '2026-08-06'
 tags:
 - Company
-- Medical Devices
-- Ophthalmology
-- Biologics
+- medical-devices
+- ophthalmology
+- biologics
 - vision-correction
 - corneal-allograft
-- presbyopia
+- Presbyopia
 - hyperopia
 - refractive-surgery
 - tissue-processing
-- Life Sciences
-- Clinical Trials
+- life-sciences
+- clinical-trials
 - content-api
 tags_raw:
 - Company
@@ -73,7 +73,7 @@ apis:
   humanURL: https://developer.wordpress.org/rest-api/
   baseURL: https://us.allotex.com/wp-json
   tags:
-  - Content
+  - content
   tags_raw:
   - content
   properties:
