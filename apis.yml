@@ -29,6 +29,19 @@ deliveryModel:
   - openapi
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://us.allotex.com/wp-content/uploads/sites/2/2021/08/allotex-logo-dark.png
 url: https://raw.githubusercontent.com/api-evangelist/allotex/refs/heads/main/apis.yml
 x-type: company
