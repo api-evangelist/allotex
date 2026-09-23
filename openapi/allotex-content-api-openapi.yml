@@ -3,16 +3,7 @@ info:
   title: Allotex Content API
   version: wp/v2
   summary: The anonymously readable WordPress REST content API behind us.allotex.com.
-  description: 'Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
-
-
-    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
-
-
-    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex''s LinkedIn page for news, so there is no on-site article feed to consume.
-
-
-    This is not a product Allotex markets. It is the site''s own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.'
+  description: Allotex Inc.
   contact:
     name: Allotex Inc.
     url: https://us.allotex.com/for-europe/contact/
@@ -32,7 +23,7 @@ servers:
   description: Allotex global splash site (1 page; posts are unmodified theme demo content)
 security: []
 tags:
-- name: content
+- name: Content
   description: Pages, posts, reusable blocks and navigation.
 paths:
   /wp/v2/pages:
@@ -41,7 +32,7 @@ paths:
       summary: List pages
       description: 'Lists the published pages of us.allotex.com. Verified 2026-08-06: 16 pages (X-WP-Total: 16) covering Home, For Europe, About Us, Our Team, Medical Advisory Board, Conditions We Treat, Careers, Science, History, Refractive Surgeons, Procedure, Press, Conferences, Blog, Contact and Privacy Policy. Unlike many Elementor-built sites, content.rendered is POPULATED on this site, so the full prose of each corporate page is retrievable.'
       tags:
-      - content
+      - Content
       parameters:
       - name: context
         in: query
@@ -161,7 +152,7 @@ paths:
       summary: Get a page
       description: Retrieves a single page by numeric ID. Verified against page 11284 (Home).
       tags:
-      - content
+      - Content
       parameters:
       - name: id
         in: path
@@ -194,7 +185,7 @@ paths:
       summary: List posts
       description: 'Lists blog posts. Verified 2026-08-06: the collection is registered but EMPTY on us.allotex.com (X-WP-Total: 0) — Allotex publishes news through its LinkedIn page rather than an on-site blog, and its Press page says so explicitly. The sibling site allotex.com returns 6 posts, all of which are unmodified Elementor demo-theme content, not Allotex material.'
       tags:
-      - content
+      - Content
       parameters:
       - name: context
         in: query
@@ -296,7 +287,7 @@ paths:
       summary: Get a post
       description: Retrieves a single post by numeric ID.
       tags:
-      - content
+      - Content
       parameters:
       - name: id
         in: path
@@ -319,7 +310,7 @@ paths:
       summary: List approved comments
       description: 'Lists approved comments. Verified 2026-08-06: 0 comments on us.allotex.com. The sibling site allotex.com returns X-WP-Total: 9551 on the same route, which is unmoderated comment spam accumulated against demo-theme posts, not Allotex content.'
       tags:
-      - content
+      - Content
       parameters:
       - name: context
         in: query
@@ -400,7 +391,7 @@ paths:
       summary: List reusable blocks
       description: 'Lists reusable editor blocks. Verified 2026-08-06: empty on this site.'
       tags:
-      - content
+      - Content
       parameters:
       - name: context
         in: query
@@ -472,7 +463,7 @@ paths:
       summary: List navigation menus
       description: 'Lists block-based navigation menus. Verified 2026-08-06: 1 menu. Note that the classic menu routes (/wp/v2/menu-items) return 401 anonymously.'
       tags:
-      - content
+      - Content
       parameters:
       - name: context
         in: query
@@ -540,6 +531,12 @@ paths:
                   type: object
 components:
   responses:
+    CommentsDisabled:
+      description: Comments are closed on the target resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
     NotFound:
       description: The resource or route does not exist (rest_post_invalid_id / rest_no_route).
       content:
@@ -559,12 +556,6 @@ components:
                 message: No route was found matching the URL and request method.
                 data:
                   status: 404
-    CommentsDisabled:
-      description: Comments are closed on the target resource.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RestError'
     Error:
       description: A WordPress REST error.
       content:
@@ -572,30 +563,6 @@ components:
           schema:
             $ref: '#/components/schemas/RestError'
   schemas:
-    RestError:
-      type: object
-      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
-      required:
-      - code
-      - message
-      - data
-      properties:
-        code:
-          type: string
-          example: rest_post_invalid_id
-        message:
-          type: string
-          example: Invalid post ID.
-        data:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 404
-            params:
-              type: object
-            details:
-              type: object
     Page:
       type: object
       description: A corporate page on us.allotex.com.
@@ -672,6 +639,30 @@ components:
           type: string
         _links:
           type: object
+    RestError:
+      type: object
+      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
+      required:
+      - code
+      - message
+      - data
+      properties:
+        code:
+          type: string
+          example: rest_post_invalid_id
+        message:
+          type: string
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            params:
+              type: object
+            details:
+              type: object
     Post:
       type: object
       description: A blog post. The collection is empty on us.allotex.com.

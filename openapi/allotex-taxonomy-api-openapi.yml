@@ -3,16 +3,7 @@ info:
   title: Allotex Content Taxonomy API
   version: wp/v2
   summary: The anonymously readable WordPress REST content API behind us.allotex.com.
-  description: 'Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
-
-
-    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
-
-
-    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex''s LinkedIn page for news, so there is no on-site article feed to consume.
-
-
-    This is not a product Allotex markets. It is the site''s own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.'
+  description: Allotex Inc.
   contact:
     name: Allotex Inc.
     url: https://us.allotex.com/for-europe/contact/
@@ -32,7 +23,7 @@ servers:
   description: Allotex global splash site (1 page; posts are unmodified theme demo content)
 security: []
 tags:
-- name: taxonomy
+- name: Taxonomy
   description: Categories and tags.
 paths:
   /wp/v2/categories:
@@ -41,7 +32,7 @@ paths:
       summary: List categories
       description: 'Lists the category taxonomy. Verified 2026-08-06: 6 terms.'
       tags:
-      - taxonomy
+      - Taxonomy
       parameters:
       - name: context
         in: query
@@ -125,7 +116,7 @@ paths:
       summary: Get a category
       description: Retrieves a single category term. Verified against term 1 (Uncategorized).
       tags:
-      - taxonomy
+      - Taxonomy
       parameters:
       - name: id
         in: path
@@ -148,7 +139,7 @@ paths:
       summary: List tags
       description: 'Lists the post_tag taxonomy. Verified 2026-08-06: 7 terms.'
       tags:
-      - taxonomy
+      - Taxonomy
       parameters:
       - name: context
         in: query
@@ -222,7 +213,7 @@ paths:
       summary: Get a tag
       description: Retrieves a single tag term.
       tags:
-      - taxonomy
+      - Taxonomy
       parameters:
       - name: id
         in: path
@@ -241,6 +232,29 @@ paths:
           $ref: '#/components/responses/TermNotFound'
 components:
   schemas:
+    Term:
+      type: object
+      description: A taxonomy term (category or tag).
+      properties:
+        id:
+          type: integer
+        count:
+          type: integer
+        description:
+          type: string
+        link:
+          type: string
+          format: uri
+        name:
+          type: string
+        slug:
+          type: string
+        taxonomy:
+          type: string
+        parent:
+          type: integer
+        _links:
+          type: object
     RestError:
       type: object
       description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
@@ -265,36 +279,7 @@ components:
               type: object
             details:
               type: object
-    Term:
-      type: object
-      description: A taxonomy term (category or tag).
-      properties:
-        id:
-          type: integer
-        count:
-          type: integer
-        description:
-          type: string
-        link:
-          type: string
-          format: uri
-        name:
-          type: string
-        slug:
-          type: string
-        taxonomy:
-          type: string
-        parent:
-          type: integer
-        _links:
-          type: object
   responses:
-    Error:
-      description: A WordPress REST error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RestError'
     TermNotFound:
       description: The taxonomy term does not exist.
       content:
@@ -308,6 +293,12 @@ components:
                 message: Term does not exist.
                 data:
                   status: 404
+    Error:
+      description: A WordPress REST error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
   securitySchemes:
     applicationPassword:
       type: http

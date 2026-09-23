@@ -3,16 +3,7 @@ info:
   title: Allotex Content Media API
   version: wp/v2
   summary: The anonymously readable WordPress REST content API behind us.allotex.com.
-  description: 'Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
-
-
-    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
-
-
-    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex''s LinkedIn page for news, so there is no on-site article feed to consume.
-
-
-    This is not a product Allotex markets. It is the site''s own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.'
+  description: Allotex Inc.
   contact:
     name: Allotex Inc.
     url: https://us.allotex.com/for-europe/contact/
@@ -32,7 +23,7 @@ servers:
   description: Allotex global splash site (1 page; posts are unmodified theme demo content)
 security: []
 tags:
-- name: media
+- name: Media
   description: The 218-item media library and its size variants.
 paths:
   /wp/v2/media:
@@ -41,7 +32,7 @@ paths:
       summary: List media items
       description: 'Lists the media library. Verified 2026-08-06: 218 items (X-WP-Total: 218) — the clinical imagery, product photography, team headshots and logo assets used across the site, each with its generated size variants under media_details.sizes.'
       tags:
-      - media
+      - Media
       parameters:
       - name: context
         in: query
@@ -138,7 +129,7 @@ paths:
       summary: Get a media item
       description: Retrieves a single attachment by numeric ID.
       tags:
-      - media
+      - Media
       parameters:
       - name: id
         in: path
@@ -156,31 +147,33 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    NotFound:
+      description: The resource or route does not exist (rest_post_invalid_id / rest_no_route).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
+          examples:
+            invalid_id:
+              value:
+                code: rest_post_invalid_id
+                message: Invalid post ID.
+                data:
+                  status: 404
+            no_route:
+              value:
+                code: rest_no_route
+                message: No route was found matching the URL and request method.
+                data:
+                  status: 404
+    Error:
+      description: A WordPress REST error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestError'
   schemas:
-    RestError:
-      type: object
-      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
-      required:
-      - code
-      - message
-      - data
-      properties:
-        code:
-          type: string
-          example: rest_post_invalid_id
-        message:
-          type: string
-          example: Invalid post ID.
-        data:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 404
-            params:
-              type: object
-            details:
-              type: object
     MediaItem:
       type: object
       description: An attachment in the media library.
@@ -235,32 +228,30 @@ components:
           format: uri
         _links:
           type: object
-  responses:
-    Error:
-      description: A WordPress REST error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RestError'
-    NotFound:
-      description: The resource or route does not exist (rest_post_invalid_id / rest_no_route).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/RestError'
-          examples:
-            invalid_id:
-              value:
-                code: rest_post_invalid_id
-                message: Invalid post ID.
-                data:
-                  status: 404
-            no_route:
-              value:
-                code: rest_no_route
-                message: No route was found matching the URL and request method.
-                data:
-                  status: 404
+    RestError:
+      type: object
+      description: The WordPress REST error envelope. NOT RFC 9457 — the media type is application/json, not application/problem+json, and the field names are code/message/data.status rather than type/title/status/detail.
+      required:
+      - code
+      - message
+      - data
+      properties:
+        code:
+          type: string
+          example: rest_post_invalid_id
+        message:
+          type: string
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            params:
+              type: object
+            details:
+              type: object
   securitySchemes:
     applicationPassword:
       type: http

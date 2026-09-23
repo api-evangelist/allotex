@@ -1,12 +1,7 @@
 {
   "provider": "allotex",
   "sources": [
-    "allotex-content-api-openapi.yml",
-    "allotex-discovery-api-openapi.yml",
-    "allotex-identity-api-openapi.yml",
-    "allotex-media-api-openapi.yml",
-    "allotex-schema-api-openapi.yml",
-    "allotex-taxonomy-api-openapi.yml"
+    "_original/allotex-content-openapi.yml"
   ],
   "outputs": [
     "allotex-content-api-openapi.yml",
@@ -20,13 +15,16 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "allotex-content-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "allotex-discovery-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "allotex-identity-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "allotex-media-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "allotex-schema-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "allotex-taxonomy-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "allotex-content-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "allotex-content-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "allotex-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "allotex-identity-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "allotex-media-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "allotex-schema-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "allotex-taxonomy-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

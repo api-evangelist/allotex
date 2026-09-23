@@ -3,16 +3,7 @@ info:
   title: Allotex Content Identity API
   version: wp/v2
   summary: The anonymously readable WordPress REST content API behind us.allotex.com.
-  description: 'Allotex Inc. is an ophthalmic biologics and device company; it runs no developer program and publishes no product API, no developer portal, no API reference and no SDKs. The only machine-readable, credential-free surface it exposes is the WordPress REST API that backs its corporate website at us.allotex.com, catalogued here.
-
-
-    This document is DERIVED by the API Evangelist enrichment pipeline from the route index Allotex publishes at https://us.allotex.com/wp-json/ — 270 routes across 20 namespaces — and every operation below was fetched live and confirmed to return data anonymously on 2026-08-06. Routes that returned 401/403 without credentials (/wp/v2/settings, /wp/v2/menu-items, /wp/v2/themes, /wp/v2/plugins, /wp/v2/block-patterns/patterns, /wp-abilities/v1/*, /mcp/mcp-adapter-default-server, /contact-form-7/v1/contact-forms) are deliberately NOT modelled.
-
-
-    Two things a consumer should know. First, unlike many Elementor-built sites, content.rendered IS populated on this site, so the full prose of all 16 corporate pages — About Us, Science, History, Conditions We Treat, Procedure, Refractive Surgeons, Medical Advisory Board, Our Team, Careers, Press, Conferences and Contact — is retrievable. Second, the posts collection is registered but empty: the Press page directs readers to Allotex''s LinkedIn page for news, so there is no on-site article feed to consume.
-
-
-    This is not a product Allotex markets. It is the site''s own content surface, and it carries no published SLA, versioning policy, deprecation policy, rate limits or support channel. The wp/v2 contract itself is defined upstream by WordPress.'
+  description: Allotex Inc.
   contact:
     name: Allotex Inc.
     url: https://us.allotex.com/for-europe/contact/
@@ -32,7 +23,7 @@ servers:
   description: Allotex global splash site (1 page; posts are unmodified theme demo content)
 security: []
 tags:
-- name: identity
+- name: Identity
   description: Public author records.
 paths:
   /wp/v2/users:
@@ -41,7 +32,7 @@ paths:
       summary: List public authors
       description: 'Lists users who have authored public content. Verified 2026-08-06: 2 records, both site-operator accounts (T20Admin, Allotex) rather than named staff — no personal data beyond a display name, avatar and author archive link is exposed anonymously.'
       tags:
-      - identity
+      - Identity
       parameters:
       - name: context
         in: query
@@ -115,7 +106,7 @@ paths:
       summary: Get a public author
       description: Retrieves a single public author record. Verified against user 1 (T20Admin).
       tags:
-      - identity
+      - Identity
       parameters:
       - name: id
         in: path
