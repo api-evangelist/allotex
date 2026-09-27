@@ -80,138 +80,20 @@ tags_raw:
 - clinical-trials
 - content-api
 apis:
-- aid: allotex:allotex-content-api
-  name: Allotex Content API
-  description: Pages, posts, reusable blocks and navigation.
-  humanURL: https://developer.wordpress.org/rest-api/
+- aid: allotex:us-allotex-com-website-wordpress-rest
+  name: Allotex Website (WordPress REST)
+  description: 'The public WordPress REST API (wp-json) of the Allotex website at us.allotex.com: the
+    route index of the site''s content management system, catalogued as one site surface rather than as
+    separate APIs.'
   baseURL: https://us.allotex.com/wp-json
   tags:
-  - Content
-  tags_raw:
-  - content
+  - WordPress
+  x-surface: platform-generated
   properties:
-  - type: OpenAPI
-    url: openapi/allotex-content-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
-- aid: allotex:allotex-discovery-api
-  name: Allotex Discovery API
-  description: Route index, cross-content search and the oEmbed provider endpoint.
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://us.allotex.com/wp-json
-  tags:
-  - Discovery
-  tags_raw:
-  - discovery
-  properties:
-  - type: OpenAPI
-    url: openapi/allotex-discovery-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
-- aid: allotex:allotex-identity-api
-  name: Allotex Identity API
-  description: Public author records.
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://us.allotex.com/wp-json
-  tags:
-  - Identity
-  tags_raw:
-  - identity
-  properties:
-  - type: OpenAPI
-    url: openapi/allotex-identity-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
-- aid: allotex:allotex-media-api
-  name: Allotex Media API
-  description: The 218-item media library and its size variants.
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://us.allotex.com/wp-json
-  tags:
-  - Media
-  tags_raw:
-  - media
-  properties:
-  - type: OpenAPI
-    url: openapi/allotex-media-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
-- aid: allotex:allotex-schema-api
-  name: Allotex Schema API
-  description: Registered post types, taxonomies and statuses.
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://us.allotex.com/wp-json
-  tags:
-  - Schema
-  tags_raw:
-  - schema
-  properties:
-  - type: OpenAPI
-    url: openapi/allotex-schema-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
-- aid: allotex:allotex-taxonomy-api
-  name: Allotex Taxonomy API
-  description: Categories and tags.
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://us.allotex.com/wp-json
-  tags:
-  - Taxonomy
-  tags_raw:
-  - taxonomy
-  properties:
-  - type: OpenAPI
-    url: openapi/allotex-taxonomy-api-openapi.yml
-  - type: Authentication
-    url: authentication/allotex-authentication.yml
-  - type: ErrorCatalog
-    url: errors/allotex-problem-types.yml
-  - type: Conventions
-    url: conventions/allotex-conventions.yml
-  - type: DataModel
-    url: data-model/allotex-data-model.yml
-  - type: JSONLD
-    url: json-ld/allotex-json-ld.yml
+  - type: Documentation
+    url: https://us.allotex.com/wp-json
+  x-platform: wordpress
+  x-platform-surface: rest
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
