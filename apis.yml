@@ -50,7 +50,7 @@ x-tier: profiled
 x-tier-reason: enriched
 specificationVersion: '0.23'
 created: '2026-08-06'
-modified: '2026-08-06'
+modified: '2026-10-06'
 tags:
 - Company
 - Medical Devices
@@ -100,6 +100,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- url: https://us.allotex.com/for-europe/blog/
+  type: Blog
 - type: MCPServer
   url: mcp/allotex-mcp.yml
 - type: Overlay
